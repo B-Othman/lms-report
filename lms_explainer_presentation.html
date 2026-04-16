@@ -1,0 +1,769 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --av: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    --cream: #FAFAF7;
+    --sand: #F5F2EB;
+    --warm: #EDE9E0;
+    --ink: #2A2F35;
+    --ink2: #4A5260;
+    --ink3: #737D8C;
+    --sage: #7A9E7E;
+    --sage-l: #EAF2EB;
+    --clay: #C4785A;
+    --clay-l: #FAF0EB;
+    --sky: #5B89B4;
+    --sky-l: #EAF1F8;
+    --plum: #7E6FAD;
+    --plum-l: #F0EEF8;
+    --gold: #C9A84C;
+    --gold-l: #FAF5E4;
+    --border: rgba(42,47,53,0.1);
+    --border2: rgba(42,47,53,0.06);
+  }
+  body { font-family: var(--av); background: var(--cream); color: var(--ink); }
+
+  .slide {
+    padding: 48px 52px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .slide:nth-child(even) { background: var(--sand); }
+  .slide:nth-child(odd) { background: var(--cream); }
+
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 14px;
+  }
+  h1 { font-size: 42px; font-weight: 300; line-height: 1.15; color: var(--ink); }
+  h2 { font-size: 28px; font-weight: 300; color: var(--ink); margin-bottom: 8px; }
+  h3 { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .lead { font-size: 16px; font-weight: 300; color: var(--ink2); line-height: 1.7; max-width: 620px; margin-top: 10px; }
+  .divider { width: 40px; height: 3px; background: var(--sage); border-radius: 2px; margin: 18px 0; }
+
+  /* cards */
+  .card {
+    background: white;
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .card-color {
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+
+  /* grids */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .g4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+
+  /* icon circles */
+  .ico {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 12px; flex-shrink: 0;
+  }
+
+  /* body text */
+  p { font-size: 14px; color: var(--ink2); line-height: 1.65; }
+  .small { font-size: 12px; color: var(--ink3); line-height: 1.6; margin-top: 6px; }
+
+  /* pill */
+  .pill {
+    display: inline-block;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 11px; border-radius: 20px;
+    margin-bottom: 10px;
+  }
+
+  /* list rows */
+  .lrow {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 0.5px solid var(--border2);
+  }
+  .lrow:last-child { border-bottom: none; }
+  .ldot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+
+  /* quote block */
+  .quote {
+    border-left: 3px solid var(--sage);
+    padding: 14px 20px;
+    background: var(--sage-l);
+    border-radius: 0 10px 10px 0;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-top: 20px;
+  }
+
+  /* big number */
+  .bign { font-size: 48px; font-weight: 200; letter-spacing: -2px; }
+
+  /* course type cards */
+  .ct-card {
+    border-radius: 12px;
+    padding: 18px 20px;
+    border: 0.5px solid var(--border);
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ct-icon { font-size: 26px; }
+  .ct-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .ct-desc { font-size: 12px; color: var(--ink2); line-height: 1.55; }
+  .ct-eg { font-size: 11px; color: var(--ink3); font-style: italic; margin-top: 4px; }
+
+  /* persona cards */
+  .persona {
+    border-radius: 14px;
+    padding: 20px;
+    background: white;
+    border: 0.5px solid var(--border);
+  }
+  .persona-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 12px;
+  }
+  .persona-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .persona-role { font-size: 12px; color: var(--ink3); margin-bottom: 10px; }
+
+  /* steps */
+  .step {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 14px 0; border-bottom: 0.5px solid var(--border2);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--sage); color: white;
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-body { padding-top: 5px; }
+  .step-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+  .step-text { font-size: 13px; color: var(--ink2); line-height: 1.55; }
+
+  /* accent blob */
+  .blob {
+    position: absolute; border-radius: 50%;
+    opacity: 0.07; pointer-events: none;
+  }
+
+  /* two-sided layout */
+  .side-l { padding-right: 28px; border-right: 0.5px solid var(--border); }
+  .side-r { padding-left: 28px; }
+
+  /* comparison */
+  .vs-row {
+    display: grid; grid-template-columns: 1fr 40px 1fr;
+    align-items: center; gap: 0;
+    margin-bottom: 10px;
+  }
+  .vs-l { padding: 10px 16px; background: var(--sky-l); border-radius: 8px 0 0 8px; font-size: 13px; color: var(--ink2); }
+  .vs-m { text-align: center; font-size: 11px; font-weight: 700; color: var(--ink3); background: var(--warm); padding: 10px 0; }
+  .vs-r { padding: 10px 16px; background: var(--clay-l); border-radius: 0 8px 8px 0; font-size: 13px; color: var(--ink2); }
+  .vs-label { font-size: 11px; font-weight: 700; color: var(--ink3); margin-bottom: 4px; }
+
+  /* feature highlight */
+  .highlight {
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 0.5px solid var(--border);
+    background: white;
+    margin-bottom: 10px;
+    display: flex; gap: 14px; align-items: center;
+  }
+  .hl-icon { font-size: 22px; flex-shrink: 0; }
+  .hl-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .hl-text { font-size: 13px; color: var(--ink2); margin-top: 2px; line-height: 1.5; }
+
+  /* accessibility */
+  .acc-row {
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: white;
+    border: 0.5px solid var(--border);
+    margin-bottom: 8px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .acc-badge {
+    font-size: 11px; font-weight: 700; padding: 2px 8px;
+    border-radius: 6px; flex-shrink: 0; margin-top: 2px;
+  }
+</style>
+
+<div>
+
+  <!-- S1: Cover -->
+  <div class="slide" style="min-height: 420px;">
+    <div class="blob" style="width:400px;height:400px;background:var(--sage);top:-100px;right:-100px;"></div>
+    <div class="eyebrow">A plain-language guide</div>
+    <h1>What is an LMS?<br>How does it work?</h1>
+    <div class="divider"></div>
+    <p class="lead">A friendly walkthrough of Learning Management Systems — what they are, who uses them, what kinds of courses they hold, and why they matter for learners and educators alike.</p>
+    <div style="display: flex; gap: 16px; margin-top: 36px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px; background: white; border: 0.5px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 13px; color: var(--ink2);">
+        <span style="font-size:16px;">📚</span> What is an LMS
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; background: white; border: 0.5px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 13px; color: var(--ink2);">
+        <span style="font-size:16px;">🎓</span> Course types
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; background: white; border: 0.5px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 13px; color: var(--ink2);">
+        <span style="font-size:16px;">👥</span> Who uses it
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; background: white; border: 0.5px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 13px; color: var(--ink2);">
+        <span style="font-size:16px;">⭐</span> What makes it great
+      </div>
+    </div>
+  </div>
+
+  <!-- S2: What is an LMS -->
+  <div class="slide">
+    <div class="eyebrow">The basics</div>
+    <h2>So… what exactly is an LMS?</h2>
+    <div class="divider"></div>
+    <div class="g2" style="margin-top: 0;">
+      <div>
+        <p class="lead" style="margin-top:0;">Think of an LMS as a <strong>digital school building</strong> — one place where all courses live, learners enroll, teachers instruct, and progress gets tracked.</p>
+        <div class="quote">
+          An LMS is an <strong>orchestration and record system for learning</strong> — not merely a content player. It's as much about who took what, when, and how they did, as it is about showing the content itself.
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom: 16px;">The two sides of every LMS</h3>
+        <div class="card" style="margin-bottom: 12px; border-left: 3px solid var(--sky);">
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
+            <span style="font-size:22px;">🧑‍🎓</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 700; color: var(--ink);">The learner side</div>
+              <div class="small">What students and employees experience</div>
+            </div>
+          </div>
+          <p>Discover courses, enroll, watch videos, take quizzes, earn certificates, and track your own progress — all in one place.</p>
+        </div>
+        <div class="card" style="border-left: 3px solid var(--clay);">
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
+            <span style="font-size:22px;">🧑‍💼</span>
+            <div>
+              <div style="font-size: 14px; font-weight: 700; color: var(--ink);">The admin side</div>
+              <div class="small">What instructors and managers see</div>
+            </div>
+          </div>
+          <p>Organize courses, control who has access, assign training, grade assessments, and produce reports showing who learned what.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3: Problems it solves -->
+  <div class="slide">
+    <div class="eyebrow">Why it exists</div>
+    <h2>The real problems an LMS solves</h2>
+    <div class="divider"></div>
+    <div class="g3" style="margin-top: 4px;">
+      <div class="card-color" style="background: var(--sky-l); border: 0.5px solid rgba(91,137,180,0.2);">
+        <div class="ico" style="background: rgba(91,137,180,0.15);">📁</div>
+        <h3>Everything in one place</h3>
+        <p>No more scattered PDFs in email, videos on random drives, or quizzes in spreadsheets. One home for all learning content.</p>
+      </div>
+      <div class="card-color" style="background: var(--sage-l); border: 0.5px solid rgba(122,158,126,0.2);">
+        <div class="ico" style="background: rgba(122,158,126,0.15);">📅</div>
+        <h3>Structure + scheduling</h3>
+        <p>Courses have due dates, prerequisites, and calendars. No more guessing "what should I learn next?" or missing a deadline.</p>
+      </div>
+      <div class="card-color" style="background: var(--clay-l); border: 0.5px solid rgba(196,120,90,0.2);">
+        <div class="ico" style="background: rgba(196,120,90,0.15);">✅</div>
+        <h3>Proof of completion</h3>
+        <p>For compliance training, safety courses, and certifications, organizations need evidence that people actually finished and understood the material.</p>
+      </div>
+      <div class="card-color" style="background: var(--plum-l); border: 0.5px solid rgba(126,111,173,0.2);">
+        <div class="ico" style="background: rgba(126,111,173,0.15);">📊</div>
+        <h3>See who's progressing</h3>
+        <p>Managers can instantly see: who finished onboarding, who's overdue on safety training, who passed their certification exam.</p>
+      </div>
+      <div class="card-color" style="background: var(--gold-l); border: 0.5px solid rgba(201,168,76,0.2);">
+        <div class="ico" style="background: rgba(201,168,76,0.15);">🔁</div>
+        <h3>Repeatability at scale</h3>
+        <p>Train 10 employees or 10,000 — the same quality course runs for everyone without an instructor needing to be there each time.</p>
+      </div>
+      <div class="card-color" style="background: var(--sky-l); border: 0.5px solid rgba(91,137,180,0.2);">
+        <div class="ico" style="background: rgba(91,137,180,0.15);">💬</div>
+        <h3>Feedback loops</h3>
+        <p>Instructors give grades and comments; learners see results; systems send reminders. Teaching and learning become a two-way conversation.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4: Course Types -->
+  <div class="slide">
+    <div class="eyebrow">Content & formats</div>
+    <h2>Types of courses an LMS can hold</h2>
+    <div class="divider"></div>
+    <div class="g3" style="margin-top: 4px;">
+      <div class="ct-card" style="border-top: 3px solid var(--sky);">
+        <div class="ct-icon">🎬</div>
+        <div class="ct-name">Self-paced video courses</div>
+        <div class="ct-desc">Pre-recorded lessons a learner watches on their own schedule. Pause, rewind, and revisit anytime. The most common format today.</div>
+        <div class="ct-eg">e.g. "Watch 5 videos, take a quiz, earn your badge"</div>
+      </div>
+      <div class="ct-card" style="border-top: 3px solid var(--sage);">
+        <div class="ct-icon">📦</div>
+        <div class="ct-name">SCORM packages</div>
+        <div class="ct-desc">Interactive courses built in tools like Articulate or Adobe Captivate, then "packaged" and uploaded. Slides, branching scenarios, scored simulations.</div>
+        <div class="ct-eg">e.g. "Click through a compliance scenario with choices"</div>
+      </div>
+      <div class="ct-card" style="border-top: 3px solid var(--clay);">
+        <div class="ct-icon">👨‍🏫</div>
+        <div class="ct-name">Instructor-led training (ILT)</div>
+        <div class="ct-desc">A real human teacher delivers the session, either in a room or over video call. The LMS handles enrollment, attendance, and follow-up materials.</div>
+        <div class="ct-eg">e.g. "Book a seat in Tuesday's workshop"</div>
+      </div>
+      <div class="ct-card" style="border-top: 3px solid var(--plum);">
+        <div class="ct-icon">💻</div>
+        <div class="ct-name">Virtual ILT (vILT)</div>
+        <div class="ct-desc">Live instructor-led training delivered over Zoom, Teams, or Webex. LMS manages scheduling, links, attendance recording, and post-session resources.</div>
+        <div class="ct-eg">e.g. "Join the live onboarding call via Zoom"</div>
+      </div>
+      <div class="ct-card" style="border-top: 3px solid var(--gold);">
+        <div class="ct-icon">🗺️</div>
+        <div class="ct-name">Learning paths / programs</div>
+        <div class="ct-desc">A curated sequence of courses with rules: complete Module 1 before unlocking Module 2. Great for onboarding journeys and skill progressions.</div>
+        <div class="ct-eg">e.g. "New hire week: Day 1 → Day 5 modules"</div>
+      </div>
+      <div class="ct-card" style="border-top: 3px solid var(--sky);">
+        <div class="ct-icon">🧩</div>
+        <div class="ct-name">Blended learning</div>
+        <div class="ct-desc">Mix of self-paced content and live sessions. Read the theory on Monday, attend a practice workshop on Thursday — all tracked in one place.</div>
+        <div class="ct-eg">e.g. "3 videos + 1 live session + final assessment"</div>
+      </div>
+      <div class="ct-card" style="border-top: 3px solid var(--sage);">
+        <div class="ct-icon">👥</div>
+        <div class="ct-name">Cohort-based courses</div>
+        <div class="ct-desc">A group starts and finishes together on fixed dates. Includes group discussions, peer feedback, and a shared learning journey — more like a classroom.</div>
+        <div class="ct-eg">e.g. "Leadership cohort: 6 weeks, 15 participants"</div>
+      </div>
+      <div class="ct-card" style="border-top: 3px solid var(--clay);">
+        <div class="ct-icon">⚡</div>
+        <div class="ct-name">Microlearning</div>
+        <div class="ct-desc">Short bursts of focused content — 3 to 10 minutes. Perfect for busy learners, mobile consumption, or refreshing a skill quickly.</div>
+        <div class="ct-eg">e.g. "2-minute video: how to handle a refund"</div>
+      </div>
+      <div class="ct-card" style="border-top: 3px solid var(--plum);">
+        <div class="ct-icon">🏅</div>
+        <div class="ct-name">Certifications & compliance</div>
+        <div class="ct-desc">Courses with a formal end-state: pass the assessment, receive a certificate. Some expire and require renewal — the LMS tracks and reminds automatically.</div>
+        <div class="ct-eg">e.g. "Annual fire safety certification, expires yearly"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5: Who uses an LMS -->
+  <div class="slide">
+    <div class="eyebrow">People & roles</div>
+    <h2>Who uses an LMS — and how</h2>
+    <div class="divider"></div>
+    <div class="g3" style="margin-top: 4px;">
+      <div class="persona">
+        <div class="persona-avatar" style="background: var(--sky-l);">🧑‍🎓</div>
+        <div class="persona-name">The Learner</div>
+        <div class="persona-role">Student, employee, partner, customer</div>
+        <div class="lrow"><div class="ldot" style="background:var(--sky)"></div><div style="font-size:13px;color:var(--ink2);">Browse the course catalog and enroll</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sky)"></div><div style="font-size:13px;color:var(--ink2);">Watch videos, read materials, take quizzes</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sky)"></div><div style="font-size:13px;color:var(--ink2);">Track their own progress and certificates</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sky)"></div><div style="font-size:13px;color:var(--ink2);">Access on mobile, even offline</div></div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background: var(--sage-l);">🧑‍🏫</div>
+        <div class="persona-name">The Instructor</div>
+        <div class="persona-role">Teacher, trainer, facilitator, coach</div>
+        <div class="lrow"><div class="ldot" style="background:var(--sage)"></div><div style="font-size:13px;color:var(--ink2);">Build and publish course content</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sage)"></div><div style="font-size:13px;color:var(--ink2);">Grade assignments and give feedback</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sage)"></div><div style="font-size:13px;color:var(--ink2);">See who's struggling and who's excelling</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sage)"></div><div style="font-size:13px;color:var(--ink2);">Run live sessions, track attendance</div></div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background: var(--clay-l);">🧑‍💼</div>
+        <div class="persona-name">The Admin</div>
+        <div class="persona-role">L&D manager, HR, department head</div>
+        <div class="lrow"><div class="ldot" style="background:var(--clay)"></div><div style="font-size:13px;color:var(--ink2);">Enroll people and assign mandatory courses</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--clay)"></div><div style="font-size:13px;color:var(--ink2);">Set due dates, send reminders</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--clay)"></div><div style="font-size:13px;color:var(--ink2);">View team-level completion dashboards</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--clay)"></div><div style="font-size:13px;color:var(--ink2);">Export reports for audits and compliance</div></div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background: var(--plum-l);">📋</div>
+        <div class="persona-name">The Compliance Officer</div>
+        <div class="persona-role">Risk, legal, safety teams</div>
+        <div class="lrow"><div class="ldot" style="background:var(--plum)"></div><div style="font-size:13px;color:var(--ink2);">Confirm everyone completed required training</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--plum)"></div><div style="font-size:13px;color:var(--ink2);">Access audit-ready reports with timestamps</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--plum)"></div><div style="font-size:13px;color:var(--ink2);">Track certificate expiry and renewal status</div></div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background: var(--gold-l);">🏢</div>
+        <div class="persona-name">The Manager</div>
+        <div class="persona-role">Team lead, department supervisor</div>
+        <div class="lrow"><div class="ldot" style="background:var(--gold)"></div><div style="font-size:13px;color:var(--ink2);">See their team's learning progress at a glance</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--gold)"></div><div style="font-size:13px;color:var(--ink2);">Identify who needs help or follow-up</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--gold)"></div><div style="font-size:13px;color:var(--ink2);">Recommend courses to team members</div></div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background: var(--sky-l);">🌐</div>
+        <div class="persona-name">The External Learner</div>
+        <div class="persona-role">Customer, partner, reseller, franchise</div>
+        <div class="lrow"><div class="ldot" style="background:var(--sky)"></div><div style="font-size:13px;color:var(--ink2);">Learns about a product they bought or sell</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sky)"></div><div style="font-size:13px;color:var(--ink2);">Earns certification to become a certified partner</div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sky)"></div><div style="font-size:13px;color:var(--ink2);">Accesses a branded portal just for them</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6: Where LMS is used -->
+  <div class="slide">
+    <div class="eyebrow">Real-world contexts</div>
+    <h2>Where is an LMS used?</h2>
+    <div class="divider"></div>
+    <div class="g2" style="margin-top: 4px;">
+      <div>
+        <div class="highlight">
+          <div class="hl-icon">🏫</div>
+          <div>
+            <div class="hl-title">Schools & universities</div>
+            <div class="hl-text">Professors post lecture recordings, assignments, and grades. Students submit work, see feedback, and track their academic progress — all in the LMS.</div>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="hl-icon">🏭</div>
+          <div>
+            <div class="hl-title">Companies & employee training</div>
+            <div class="hl-text">New hires complete onboarding courses. Everyone does annual safety or privacy training. Managers can prove their team is compliant before an audit.</div>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="hl-icon">🎓</div>
+          <div>
+            <div class="hl-title">Training businesses & academies</div>
+            <div class="hl-text">A coaching company sells online courses. Students enroll, pay, watch content, earn certificates. The LMS is their entire course delivery platform.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="highlight">
+          <div class="hl-icon">🤝</div>
+          <div>
+            <div class="hl-title">Partner & customer education</div>
+            <div class="hl-text">A software company trains its resellers on the product. Each partner company gets their own branded portal, their own admin, and their own certificates.</div>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="hl-icon">🏥</div>
+          <div>
+            <div class="hl-title">Healthcare & regulated industries</div>
+            <div class="hl-text">Nurses complete mandatory training before starting a ward. The LMS records exactly who completed what, when, and with what score — ready for inspection.</div>
+          </div>
+        </div>
+        <div class="highlight">
+          <div class="hl-icon">🌍</div>
+          <div>
+            <div class="hl-title">Non-profits & government</div>
+            <div class="hl-text">Train volunteers across dozens of countries with consistent materials. Translate content into multiple languages. Track participation in large grant reports.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7: The learner journey -->
+  <div class="slide">
+    <div class="eyebrow">The experience</div>
+    <h2>What a learner's journey looks like</h2>
+    <div class="divider"></div>
+    <div class="g2" style="margin-top: 4px; align-items: start;">
+      <div>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Discover & enroll</div>
+            <div class="step-text">Browse the course catalog, see descriptions, durations, and ratings. Self-enroll or get assigned by a manager. Receive a welcome email with your start date.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Learn at your own pace</div>
+            <div class="step-text">Work through videos, articles, and interactive content. Pause and pick up where you left off — on desktop or mobile, even offline on a train.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Test your knowledge</div>
+            <div class="step-text">Take quizzes with instant feedback. Multiple attempts allowed. Some courses lock the next module until you score 70% or higher.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Submit & get feedback</div>
+            <div class="step-text">For longer assignments, upload your work directly in the LMS. Instructors add comments and a grade. All in one place, no email attachments.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-title">Earn your certificate</div>
+            <div class="step-text">On completion, the LMS automatically generates your certificate — with your name, date, and a verification link. Download it as a PDF or share it on LinkedIn.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <div class="step-title">Keep growing</div>
+            <div class="step-text">The LMS recommends your next course. Some certifications expire — you'll get an automated reminder when renewal is due in 12 months.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8: LMS vs others -->
+  <div class="slide">
+    <div class="eyebrow">Clearing up the confusion</div>
+    <h2>LMS vs other platforms — what's the difference?</h2>
+    <div class="divider"></div>
+    <div style="margin-top: 4px;">
+      <div style="display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; margin-bottom: 6px;">
+        <div class="vs-label" style="padding-left:16px;">LMS</div>
+        <div></div>
+        <div class="vs-label" style="padding-left:16px;">vs.</div>
+      </div>
+
+      <div class="vs-row">
+        <div class="vs-l"><strong style="color:var(--ink);">LMS</strong> — Delivers and tracks learning. Manages enrollments, completions, certificates, and reporting.</div>
+        <div class="vs-m">vs</div>
+        <div class="vs-r"><strong style="color:var(--ink);">LCMS</strong> — Creates and organizes content. The backend where authors build courses. Less about delivery, more about authoring tools.</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-l"><strong style="color:var(--ink);">LMS</strong> — Manages and delivers structured learning programs with tracking, compliance, and reporting.</div>
+        <div class="vs-m">vs</div>
+        <div class="vs-r"><strong style="color:var(--ink);">LXP</strong> — Recommends content based on your interests, role, and behavior. More Netflix-style discovery, less "you must complete this."</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-l"><strong style="color:var(--ink);">LMS</strong> — Where learning happens. Holds courses, tracks progress, issues certificates.</div>
+        <div class="vs-m">vs</div>
+        <div class="vs-r"><strong style="color:var(--ink);">SIS (Student Information System)</strong> — Holds student records, rosters, enrollment data, and grades as the academic system of record. The two often sync.</div>
+      </div>
+      <div class="vs-row">
+        <div class="vs-l"><strong style="color:var(--ink);">LMS</strong> — Platform for delivering training to groups with admin oversight and compliance tracking.</div>
+        <div class="vs-m">vs</div>
+        <div class="vs-r"><strong style="color:var(--ink);">Course platform</strong> (Teachable, Thinkific) — Creator-focused. Optimized for selling courses and marketing. Less focus on enterprise compliance or SCORM.</div>
+      </div>
+    </div>
+    <div class="quote" style="margin-top: 20px;">
+      In 2026, the trend isn't "LMS replaced by LXP" — it's the two <strong>converging</strong>. Modern platforms blend structured assignment with personalized content discovery.
+    </div>
+  </div>
+
+  <!-- S9: What makes a great LMS -->
+  <div class="slide">
+    <div class="eyebrow">Quality markers</div>
+    <h2>What makes a great LMS experience?</h2>
+    <div class="divider"></div>
+    <div class="g2" style="margin-top: 4px; align-items: start;">
+      <div>
+        <h3 style="margin-bottom: 14px; color: var(--sage);">For learners</h3>
+        <div class="lrow"><div class="ldot" style="background:var(--sage)"></div><div><strong class="step-title">Easy to find what's next</strong><div class="small" style="margin-top:2px;">Clear "assigned to you," due dates, and recommended next steps. No hunting around.</div></div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sage)"></div><div><strong class="step-title">Works on any device</strong><div class="small" style="margin-top:2px;">Mobile-friendly, responsive, and ideally works offline too so a train commute isn't wasted.</div></div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sage)"></div><div><strong class="step-title">Progress is visible and rewarding</strong><div class="small" style="margin-top:2px;">Progress bars, completion badges, and certificates feel like genuine milestones — not just checkboxes.</div></div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--sage)"></div><div><strong class="step-title">Accessible to everyone</strong><div class="small" style="margin-top:2px;">Captions, screen-reader support, keyboard navigation. WCAG 2.2 compliance isn't just legal — it helps everyone learn better.</div></div></div>
+      </div>
+      <div>
+        <h3 style="margin-bottom: 14px; color: var(--clay);">For admins & instructors</h3>
+        <div class="lrow"><div class="ldot" style="background:var(--clay)"></div><div><strong class="step-title">Automation that saves hours</strong><div class="small" style="margin-top:2px;">Auto-enrollment when someone joins a team. Auto-reminders for overdue training. Renewal nudges 30 days before expiry.</div></div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--clay)"></div><div><strong class="step-title">Reports that answer real questions</strong><div class="small" style="margin-top:2px;">"Who in Sales hasn't done data privacy training?" Not just raw tables — answers you can act on immediately.</div></div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--clay)"></div><div><strong class="step-title">Content that stays up to date</strong><div class="small" style="margin-top:2px;">Update a lesson without breaking everyone's completion record. Version control for courses is crucial.</div></div></div>
+        <div class="lrow"><div class="ldot" style="background:var(--clay)"></div><div><strong class="step-title">Connects to other tools</strong><div class="small" style="margin-top:2px;">Syncs with HR systems, video conferencing, and identity tools. One login, automatic user management.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S10: Key concepts glossary -->
+  <div class="slide" style="border-bottom: none;">
+    <div class="eyebrow">Key terms made simple</div>
+    <h2>A plain-language glossary</h2>
+    <div class="divider"></div>
+    <div class="g3" style="margin-top: 4px;">
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--sky); margin-bottom: 6px;">SCORM</div>
+        <p>A standard packaging format for e-learning courses. Like a ZIP file with special rules so any LMS can open it and track how you did. Built in Articulate, Lectora, or Adobe tools.</p>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--sage); margin-bottom: 6px;">xAPI / Tin Can</div>
+        <p>A newer tracking standard that can record almost any learning activity — watching a video, reading an article, practicing a skill in the real world — not just clicks inside a course.</p>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--clay); margin-bottom: 6px;">LRS</div>
+        <p>Learning Record Store. Where xAPI statements are saved. Think of it as a detailed diary of every learning action, queryable for analytics. Required for xAPI to work properly.</p>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--plum); margin-bottom: 6px;">LTI</div>
+        <p>Learning Tools Interoperability. The standard that lets an LMS launch external tools — a virtual lab, a publisher's content, a simulation — securely, as if it's part of the course.</p>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--gold); margin-bottom: 6px;">SSO</div>
+        <p>Single Sign-On. Log in once with your company account (e.g. Google or Microsoft) and you're automatically authenticated in the LMS too. No separate password needed.</p>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--sky); margin-bottom: 6px;">Certificate</div>
+        <p>A digital document issued by the LMS when you complete a course. Includes your name, the date, and a verification link. Some expire and require renewal training each year.</p>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--sage); margin-bottom: 6px;">Learning path</div>
+        <p>A curated sequence of courses. You can't take Course 3 until you've passed Course 2. Used for onboarding journeys, skill progression tracks, and structured certification programs.</p>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--clay); margin-bottom: 6px;">Enrollment</div>
+        <p>The act of registering a learner into a course. Can be self-serve (learner picks it), admin-assigned (manager enrolls a team), or automatic (new hire triggers onboarding).</p>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; color: var(--plum); margin-bottom: 6px;">Blended learning</div>
+        <p>A mix of digital self-paced content and live instructor sessions. The best of both worlds: flexibility of online learning + the depth of a real classroom conversation.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LMS Hub Navigation -->
+<script>
+(function() {
+  var SLIDES = [
+    "Cover",
+    "What is an LMS?",
+    "Problems Solved",
+    "Course Types",
+    "Who Uses It",
+    "Where It's Used",
+    "Learner Journey",
+    "LMS vs Others",
+    "What Makes It Great",
+    "Glossary"
+  ];
+  var TABS = [
+    { label: "Research",  url: "lms_research_presentation.html" },
+    { label: "Explainer", url: "lms_explainer_presentation.html", active: true },
+    { label: "Comparison", url: "lms_comparison_presentation.html" }
+  ];
+
+  var css = `
+    #lms-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      height: 50px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(42,47,53,0.09);
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 0;
+      font-family: 'Nunito', 'Avenir Next', sans-serif;
+    }
+    #lms-nav a { text-decoration: none; }
+    .lnav-hub {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: #2A2F35;
+      padding: 6px 10px 6px 6px; border-radius: 8px;
+      white-space: nowrap; transition: background 0.15s;
+    }
+    .lnav-hub:hover { background: #F5F2EB; }
+    .lnav-sep { width: 1px; height: 20px; background: rgba(42,47,53,0.12); margin: 0 10px; flex-shrink: 0; }
+    .lnav-tabs { display: flex; gap: 2px; }
+    .lnav-tab {
+      font-size: 12px; font-weight: 500; color: #838C99;
+      padding: 5px 11px; border-radius: 8px; cursor: pointer;
+      white-space: nowrap; transition: background 0.15s, color 0.15s; text-decoration: none;
+    }
+    .lnav-tab:hover { background: #F5F2EB; color: #2A2F35; }
+    .lnav-tab.active { background: #EAF1F8; color: #3A6F9E; font-weight: 600; }
+    .lnav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .lnav-counter { font-size: 11px; font-weight: 500; color: #838C99; white-space: nowrap; }
+    .lnav-dots { display: flex; gap: 5px; align-items: center; }
+    .lnav-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(42,47,53,0.15); cursor: pointer;
+      border: none; padding: 0; flex-shrink: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .lnav-dot:hover { background: rgba(42,47,53,0.35); transform: scale(1.2); }
+    .lnav-dot.active { background: #4A7FAE; transform: scale(1.1); }
+  `;
+  var styleEl = document.createElement('style');
+  styleEl.textContent = css;
+  document.head.appendChild(styleEl);
+
+  var dotsHtml = SLIDES.map(function(s, i) {
+    return '<button class="lnav-dot' + (i === 0 ? ' active' : '') +
+           '" title="' + s + '" data-idx="' + i + '"></button>';
+  }).join('');
+
+  var tabsHtml = TABS.map(function(t) {
+    return '<a class="lnav-tab' + (t.active ? ' active' : '') +
+           '" href="' + t.url + '">' + t.label + '</a>';
+  }).join('');
+
+  var nav = document.createElement('div');
+  nav.id = 'lms-nav';
+  nav.innerHTML =
+    '<a class="lnav-hub" href="index.html">' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none">' +
+        '<path d="M8.5 11.5L4 7l4.5-4.5" stroke="#4A5260" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg>Hub</a>' +
+    '<div class="lnav-sep"></div>' +
+    '<div class="lnav-tabs">' + tabsHtml + '</div>' +
+    '<div class="lnav-right">' +
+      '<span class="lnav-counter" id="lnav-counter">1 / ' + SLIDES.length + '</span>' +
+      '<div class="lnav-dots" id="lnav-dots">' + dotsHtml + '</div>' +
+    '</div>';
+
+  document.body.insertBefore(nav, document.body.firstChild);
+  document.body.style.paddingTop = '50px';
+
+  var slideEls = document.querySelectorAll('.slide');
+  var dots = document.querySelectorAll('.lnav-dot');
+  var counter = document.getElementById('lnav-counter');
+
+  function setActive(idx) {
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+    counter.textContent = (idx + 1) + ' / ' + SLIDES.length;
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var idx = Array.prototype.indexOf.call(slideEls, entry.target);
+        if (idx !== -1) setActive(idx);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  slideEls.forEach(function(s) { observer.observe(s); });
+
+  dots.forEach(function(dot, i) {
+    dot.addEventListener('click', function() {
+      slideEls[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+</script>
+

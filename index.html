@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS Research Hub</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --av: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+      --cream: #FAFAF7;
+      --sand: #F5F2EB;
+      --warm: #EDE9E0;
+      --ink: #2A2F35;
+      --ink2: #4A5260;
+      --ink3: #838C99;
+      --border: rgba(42,47,53,0.09);
+      --sage: #6A9E6E;
+      --sage-l: #EAF2EB;
+      --sky: #4A7FAE;
+      --sky-l: #EAF1F8;
+      --clay: #C06B4A;
+      --clay-l: #FAF0EB;
+    }
+    body { font-family: var(--av); background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+    header {
+      padding: 0 52px;
+      height: 60px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
+    .logo span { color: var(--sage); }
+    .badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      color: var(--sage); text-transform: uppercase;
+      background: var(--sage-l); padding: 4px 10px; border-radius: 20px;
+    }
+
+    main { padding: 72px 52px 80px; max-width: 1080px; margin: 0 auto; }
+
+    .hero { margin-bottom: 60px; }
+    .eyebrow {
+      font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--sage); margin-bottom: 14px;
+    }
+    h1 { font-size: 40px; font-weight: 300; line-height: 1.18; color: var(--ink); }
+    .lead {
+      font-size: 15px; font-weight: 300; color: var(--ink2);
+      line-height: 1.75; max-width: 540px; margin-top: 12px;
+    }
+    .divider { width: 40px; height: 3px; background: var(--sage); border-radius: 2px; margin: 20px 0; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .card {
+      background: white;
+      border: 0.5px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.22s ease, transform 0.22s ease;
+    }
+    .card:hover {
+      box-shadow: 0 10px 36px rgba(42,47,53,0.11);
+      transform: translateY(-3px);
+    }
+    .card:active { transform: translateY(-1px); }
+
+    .card-header { padding: 30px 28px 22px; flex: 1; }
+    .card-icon { font-size: 30px; margin-bottom: 16px; display: block; }
+    .card-eyebrow {
+      font-size: 9px; font-weight: 700; letter-spacing: 2.2px;
+      text-transform: uppercase; margin-bottom: 9px;
+    }
+    .card-title { font-size: 20px; font-weight: 300; line-height: 1.25; color: var(--ink); margin-bottom: 11px; }
+    .card-desc { font-size: 12.5px; color: var(--ink2); line-height: 1.65; font-weight: 300; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .tag {
+      font-size: 10.5px; font-weight: 500; padding: 4px 10px;
+      border-radius: 12px; color: var(--ink2);
+      background: var(--sand); border: 0.5px solid var(--border);
+    }
+
+    .card-footer {
+      padding: 15px 28px;
+      border-top: 0.5px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-meta { font-size: 11px; color: var(--ink3); display: flex; align-items: center; gap: 6px; }
+    .card-meta .dot { width: 5px; height: 5px; border-radius: 50%; }
+    .arrow { font-size: 18px; color: var(--ink3); transition: transform 0.2s; }
+    .card:hover .arrow { transform: translateX(3px); }
+
+    /* Per-card accent colors */
+    .card-research .card-header { background: linear-gradient(145deg, #FAFCFA 0%, #EEF5EE 100%); }
+    .card-research .card-eyebrow { color: var(--sage); }
+    .card-research .dot { background: var(--sage); }
+
+    .card-explainer .card-header { background: linear-gradient(145deg, #FAFCFF 0%, #EBF2F8 100%); }
+    .card-explainer .card-eyebrow { color: var(--sky); }
+    .card-explainer .dot { background: var(--sky); }
+
+    .card-comparison .card-header { background: linear-gradient(145deg, #FFFAF8 0%, #F5EDE8 100%); }
+    .card-comparison .card-eyebrow { color: var(--clay); }
+    .card-comparison .dot { background: var(--clay); }
+
+    footer {
+      padding: 28px 52px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    footer p { font-size: 12px; color: var(--ink3); }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; max-width: 480px; }
+      main { padding: 48px 24px 60px; }
+      header { padding: 0 24px; }
+      footer { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">LMS <span>Research Hub</span></div>
+    <div class="badge">2026</div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="eyebrow">Three perspectives</div>
+      <h1>Learning Management<br>Systems — Complete Guide</h1>
+      <div class="divider"></div>
+      <p class="lead">Three complementary documents covering LMS fundamentals, the competitive landscape, and a full technical research report for building a modern multi-tenant platform.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- Research Report -->
+      <a class="card card-research" href="lms_research_presentation.html">
+        <div class="card-header">
+          <span class="card-icon">📊</span>
+          <div class="card-eyebrow">Research Report</div>
+          <div class="card-title">LMS in 2026:<br>Build &amp; Scale</div>
+          <p class="card-desc">Market sizing, architecture patterns, multi-tenancy models, RBAC, pricing tiers, tech stack recommendations, and a phased MVP-to-enterprise roadmap.</p>
+          <div class="tags">
+            <span class="tag">Market sizing</span>
+            <span class="tag">Architecture</span>
+            <span class="tag">MVP roadmap</span>
+            <span class="tag">Tech stack</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="dot"></span>
+            <span>11 slides</span>
+          </div>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <!-- Explainer -->
+      <a class="card card-explainer" href="lms_explainer_presentation.html">
+        <div class="card-header">
+          <span class="card-icon">📚</span>
+          <div class="card-eyebrow">Plain-language Guide</div>
+          <div class="card-title">What is an LMS?<br>How does it work?</div>
+          <p class="card-desc">A friendly, jargon-free walkthrough of what an LMS is, who uses it, what kinds of courses it holds, and what makes a genuinely great learning experience.</p>
+          <div class="tags">
+            <span class="tag">Fundamentals</span>
+            <span class="tag">Course types</span>
+            <span class="tag">Learner journey</span>
+            <span class="tag">Glossary</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="dot"></span>
+            <span>10 slides</span>
+          </div>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+      <!-- Comparison -->
+      <a class="card card-comparison" href="lms_comparison_presentation.html">
+        <div class="card-header">
+          <span class="card-icon">⚖️</span>
+          <div class="card-eyebrow">Platform Deep-dive</div>
+          <div class="card-title">LMS Comparison:<br>Strengths &amp; Gaps</div>
+          <p class="card-desc">Detailed analysis of 10 platforms — Moodle, Canvas, Docebo, TalentLMS, Thinkific and more. Honest strengths, real gaps, and a decision guide by use case.</p>
+          <div class="tags">
+            <span class="tag">10 platforms</span>
+            <span class="tag">Scoring matrix</span>
+            <span class="tag">Decision guide</span>
+            <span class="tag">Market gaps</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="dot"></span>
+            <span>9 slides</span>
+          </div>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>LMS Research Hub · 2026</p>
+    <p>3 presentations · 30 slides total</p>
+  </footer>
+
+</body>
+</html>

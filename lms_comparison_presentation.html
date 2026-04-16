@@ -1,0 +1,1137 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --av: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+    --cream: #FAFAF7;
+    --sand: #F5F2EB;
+    --warm: #EDE9E0;
+    --ink: #2A2F35;
+    --ink2: #4A5260;
+    --ink3: #838C99;
+    --border: rgba(42,47,53,0.09);
+    --border2: rgba(42,47,53,0.05);
+    --sage: #6A9E6E; --sage-l: #EAF2EB;
+    --clay: #C06B4A; --clay-l: #FAF0EB;
+    --sky: #4A7FAE; --sky-l: #EAF1F8;
+    --plum: #7660A8; --plum-l: #F0EEF8;
+    --gold: #B8903A; --gold-l: #FAF5E4;
+    --rose: #A85068; --rose-l: #F8EEF1;
+    --teal: #3A8B7A; --teal-l: #E3F2EE;
+  }
+  body { font-family: var(--av); background: var(--cream); color: var(--ink); }
+
+  .slide { padding: 44px 52px; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .slide:nth-child(even) { background: var(--sand); }
+  .slide:nth-child(odd) { background: var(--cream); }
+
+  .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; }
+  h1 { font-size: 40px; font-weight: 300; line-height: 1.15; color: var(--ink); }
+  h2 { font-size: 26px; font-weight: 300; color: var(--ink); margin-bottom: 6px; }
+  h3 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+  .lead { font-size: 15px; font-weight: 300; color: var(--ink2); line-height: 1.7; max-width: 640px; margin-top: 8px; }
+  .divider { width: 40px; height: 3px; background: var(--sage); border-radius: 2px; margin: 16px 0; }
+  p { font-size: 13px; color: var(--ink2); line-height: 1.6; }
+  .small { font-size: 12px; color: var(--ink3); line-height: 1.55; }
+
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .card { background: white; border: 0.5px solid var(--border); border-radius: 14px; padding: 20px 22px; }
+
+  /* Platform card */
+  .platform-card {
+    background: white;
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .pc-header {
+    padding: 18px 22px 14px;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .pc-name { font-size: 17px; font-weight: 700; color: var(--ink); }
+  .pc-segment { font-size: 11px; color: var(--ink3); margin-top: 2px; font-weight: 400; }
+  .pc-badge {
+    font-size: 10px; font-weight: 700; padding: 3px 10px;
+    border-radius: 20px; flex-shrink: 0; margin-top: 2px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .pc-body { padding: 16px 22px; }
+  .pc-section { margin-bottom: 14px; }
+  .pc-section:last-child { margin-bottom: 0; }
+  .pc-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .green-label { color: var(--sage); }
+  .red-label { color: var(--clay); }
+  .amber-label { color: var(--gold); }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag {
+    font-size: 11px; padding: 3px 9px; border-radius: 20px;
+    border: 0.5px solid var(--border);
+    color: var(--ink2); background: var(--cream);
+    font-weight: 400;
+  }
+  .tag-good { background: var(--sage-l); color: #2A6030; border-color: rgba(106,158,110,0.25); }
+  .tag-bad { background: var(--clay-l); color: #7A3A24; border-color: rgba(192,107,74,0.25); }
+  .tag-warn { background: var(--gold-l); color: #6B4A10; border-color: rgba(184,144,58,0.25); }
+
+  /* matrix table */
+  .matrix { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .matrix th {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--ink3); padding: 10px 12px; border-bottom: 1px solid var(--border);
+    background: var(--warm); text-align: left;
+  }
+  .matrix th:first-child { border-radius: 8px 0 0 0; }
+  .matrix th:last-child { border-radius: 0 8px 0 0; }
+  .matrix td { padding: 9px 12px; border-bottom: 0.5px solid var(--border2); vertical-align: middle; color: var(--ink2); }
+  .matrix tr:last-child td { border-bottom: none; }
+  .matrix tr:hover td { background: rgba(106,158,110,0.04); }
+  .matrix td:first-child { font-weight: 600; color: var(--ink); font-size: 13px; }
+
+  .yes { color: var(--sage); font-weight: 700; font-size: 14px; }
+  .no { color: #D4C4BC; font-weight: 700; font-size: 14px; }
+  .partial { color: var(--gold); font-weight: 700; font-size: 14px; }
+  .verify { font-size: 11px; color: var(--gold); font-weight: 600; }
+
+  /* gap cards */
+  .gap-card {
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    border: 0.5px solid var(--border);
+    background: white;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .gap-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+  .gap-platform { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--clay); margin-bottom: 3px; }
+  .gap-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .gap-text { font-size: 13px; color: var(--ink2); line-height: 1.55; }
+
+  /* winner banner */
+  .winner {
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 10px;
+    border: 0.5px solid var(--border);
+  }
+  .winner-ico { font-size: 24px; flex-shrink: 0; }
+  .winner-usecase { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink3); margin-bottom: 2px; }
+  .winner-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .winner-why { font-size: 12px; color: var(--ink2); margin-top: 3px; line-height: 1.5; }
+
+  /* blob deco */
+  .blob { position: absolute; border-radius: 50%; opacity: 0.06; pointer-events: none; }
+
+  /* score dots */
+  .scores { display: flex; gap: 3px; margin-top: 6px; }
+  .sdot { width: 10px; height: 10px; border-radius: 50%; }
+  .sdot-fill { background: var(--sage); }
+  .sdot-half { background: var(--gold); }
+  .sdot-empty { background: var(--warm); border: 0.5px solid var(--border); }
+
+  /* section nav */
+  .snav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px; }
+  .snav-item {
+    font-size: 11px; font-weight: 600; padding: 4px 12px;
+    border-radius: 20px; border: 0.5px solid var(--border);
+    color: var(--ink2); background: white;
+  }
+  .snav-active { background: var(--sage); color: white; border-color: var(--sage); }
+
+  .lrow { display: flex; gap: 8px; align-items: flex-start; padding: 8px 0; border-bottom: 0.5px solid var(--border2); }
+  .lrow:last-child { border-bottom: none; }
+  .ldot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+</style>
+
+<div>
+
+  <!-- S1: Cover -->
+  <div class="slide" style="min-height: 380px;">
+    <div class="blob" style="width:500px;height:500px;background:var(--sky);top:-150px;right:-150px;"></div>
+    <div class="eyebrow">Platform deep-dive · 2026</div>
+    <h1>LMS Comparison:<br>Strengths, gaps & who wins where</h1>
+    <div class="divider"></div>
+    <p class="lead">10 platforms. Honest strengths. Real gaps. A clear view of what each one does brilliantly — and what it quietly leaves on the table.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;">
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">🏫 Moodle</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">🖼️ Canvas</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">🏛️ Blackboard</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">⚡ TalentLMS</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">🚀 Docebo</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">🔷 LearnUpon</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">🟦 Absorb LMS</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">🌐 LearnWorlds</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">📘 Thinkific</span>
+      <span style="background:white;border:0.5px solid var(--border);border-radius:20px;padding:7px 16px;font-size:12px;color:var(--ink2);">✏️ Teachable</span>
+    </div>
+  </div>
+
+  <!-- S2: Quick scorecard matrix -->
+  <div class="slide">
+    <div class="eyebrow">At a glance</div>
+    <h2>Capability matrix — all 10 platforms</h2>
+    <div class="divider"></div>
+    <div style="overflow-x:auto;margin-top:4px;border-radius:12px;border:0.5px solid var(--border);">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Multi-tenant portals</th>
+            <th>SCORM 1.2</th>
+            <th>SCORM 2004</th>
+            <th>xAPI / cmi5</th>
+            <th>LTI 1.3</th>
+            <th>SSO</th>
+            <th>SCIM</th>
+            <th>eCommerce</th>
+            <th>Mobile offline</th>
+            <th>Open source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Moodle</td>
+            <td><span class="partial">~</span> plugins</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="partial">~</span> plugin</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Canvas</td>
+            <td><span class="partial">~</span> sub-accounts</td>
+            <td><span class="partial">~</span> via LTI</td>
+            <td><span class="no">✕</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="yes">✓</span> strong</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Blackboard</td>
+            <td><span class="partial">~</span> institutional</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span> playback only</td>
+            <td><span class="yes">✓</span> 1.3</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="no">✕</span></td>
+          </tr>
+          <tr>
+            <td>TalentLMS</td>
+            <td><span class="yes">✓</span> branches</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="yes">✓</span> both</td>
+            <td><span class="partial">~</span> verify</td>
+            <td><span class="yes">✓</span> OIDC</td>
+            <td><span class="partial">~</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="no">✕</span></td>
+          </tr>
+          <tr>
+            <td>Docebo</td>
+            <td><span class="yes">✓</span> extended ent.</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span> xAPI + verify cmi5</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="no">✕</span></td>
+          </tr>
+          <tr>
+            <td>LearnUpon</td>
+            <td><span class="yes">✓</span> portals</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="yes">✓</span> xAPI</td>
+            <td><span class="partial">~</span> verify</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="no">✕</span></td>
+          </tr>
+          <tr>
+            <td>Absorb LMS</td>
+            <td><span class="yes">✓</span> portal multi-tenant</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span> xAPI</td>
+            <td><span class="partial">~</span> verify</td>
+            <td><span class="yes">✓</span> SAML/OIDC</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="no">✕</span></td>
+          </tr>
+          <tr>
+            <td>LearnWorlds</td>
+            <td><span class="partial">~</span> white-label app</td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span> verify</td>
+            <td><span class="no">✕</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+          </tr>
+          <tr>
+            <td>Thinkific</td>
+            <td><span class="partial">~</span> Plus only</td>
+            <td><span class="partial">~</span> Plus only</td>
+            <td><span class="partial">~</span> Plus only</td>
+            <td><span class="no">✕</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+          </tr>
+          <tr>
+            <td>Teachable</td>
+            <td><span class="no">✕</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+            <td><span class="yes">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="no">✕</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:20px;margin-top:12px;font-size:12px;color:var(--ink3);">
+      <span><span class="yes">✓</span> Supported</span>
+      <span><span class="partial">~</span> Partial / plan-gated / verify</span>
+      <span><span class="no">✕</span> Not supported</span>
+    </div>
+  </div>
+
+  <!-- S3+4: Academic platforms -->
+  <div class="slide">
+    <div class="eyebrow">Academic LMS</div>
+    <h2>Moodle · Canvas · Blackboard</h2>
+    <div class="divider"></div>
+    <div class="g3" style="margin-top: 4px;">
+
+      <!-- Moodle -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">Moodle</div>
+            <div class="pc-segment">Open-source · Academic + training</div>
+          </div>
+          <span class="pc-badge" style="background:var(--sage-l);color:#2A6030;">Free / Open</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">SCORM 1.2 native</span>
+              <span class="tag-good">LTI ecosystem</span>
+              <span class="tag-good">Deep customization</span>
+              <span class="tag-good">Mobile offline</span>
+              <span class="tag-good">Massive community</span>
+              <span class="tag-good">Zero license cost</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">SCORM 2004 — won't fix</span>
+              <span class="tag-bad">No native multi-tenant</span>
+              <span class="tag-bad">Plugin complexity</span>
+              <span class="tag-bad">Upgrade burden</span>
+              <span class="tag-bad">No built-in eCommerce</span>
+              <span class="tag-bad">Modern UX lags</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Free software ≠ free to run. Hosting, upgrades, plugin management, and security patching require dedicated ops capacity. Many orgs underestimate this.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">Canvas</div>
+            <div class="pc-segment">Instructure · Academic-first</div>
+          </div>
+          <span class="pc-badge" style="background:var(--sky-l);color:#1E4E7A;">Academic</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">LTI ecosystem — best in class</span>
+              <span class="tag-good">Course analytics</span>
+              <span class="tag-good">Scale + reliability</span>
+              <span class="tag-good">Mobile offline</span>
+              <span class="tag-good">Open-source core</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">SCORM via LTI only (not native)</span>
+              <span class="tag-bad">No xAPI / cmi5</span>
+              <span class="tag-bad">No eCommerce</span>
+              <span class="tag-bad">Corporate compliance thin</span>
+              <span class="tag-bad">Multi-portal limited</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>SCORM feels like an afterthought — it relies on an LTI integration rather than native support, which means extra setup and potential compatibility gaps for enterprise content libraries.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blackboard -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">Blackboard</div>
+            <div class="pc-segment">Anthology · Higher ed + gov</div>
+          </div>
+          <span class="pc-badge" style="background:var(--plum-l);color:#4A2E80;">Enterprise</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">SCORM 1.2 + 2004 + AICC</span>
+              <span class="tag-good">LTI 1.3 support</span>
+              <span class="tag-good">Analytics product line</span>
+              <span class="tag-good">Mature assessment tools</span>
+              <span class="tag-good">Government deployments</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">No built-in LRS</span>
+              <span class="tag-bad">xAPI playback only</span>
+              <span class="tag-bad">Heavy admin UX</span>
+              <span class="tag-bad">No eCommerce</span>
+              <span class="tag-bad">Slow configuration</span>
+              <span class="tag-bad">High cost</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>xAPI packages can be played back, but there's no LRS included — so statements go nowhere useful. You get the content but lose the analytics depth xAPI is meant to provide.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5: Corporate SMB -->
+  <div class="slide">
+    <div class="eyebrow">Corporate / SMB</div>
+    <h2>TalentLMS · LearnUpon · Absorb LMS</h2>
+    <div class="divider"></div>
+    <div class="g3" style="margin-top: 4px;">
+
+      <!-- TalentLMS -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">TalentLMS</div>
+            <div class="pc-segment">Epignosis · SMB to mid-market</div>
+          </div>
+          <span class="pc-badge" style="background:var(--teal-l);color:#1E5E52;">SMB</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">SCORM + xAPI + cmi5</span>
+              <span class="tag-good">Branches (multi-portal)</span>
+              <span class="tag-good">Published pricing</span>
+              <span class="tag-good">OIDC SSO</span>
+              <span class="tag-good">Offline mobile sync</span>
+              <span class="tag-good">Fast setup</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">SCIM provisioning weak</span>
+              <span class="tag-bad">LTI support — verify</span>
+              <span class="tag-bad">Limited HR integrations</span>
+              <span class="tag-bad">Feature gating by plan</span>
+              <span class="tag-bad">Shallow enterprise governance</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Branches are great but governance doesn't scale well — complex multi-tenant orgs with hundreds of portals, custom policies, and cross-portal reporting hit walls quickly.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LearnUpon -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">LearnUpon</div>
+            <div class="pc-segment">Customer & partner training</div>
+          </div>
+          <span class="pc-badge" style="background:var(--sky-l);color:#1E4E7A;">Mid-market</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">Portals + sub-portals</span>
+              <span class="tag-good">Multi-portal reporting</span>
+              <span class="tag-good">SCORM + xAPI</span>
+              <span class="tag-good">Mobile across all roles</span>
+              <span class="tag-good">eCommerce built-in</span>
+              <span class="tag-good">HR system connectivity</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">SCORM 2004 — verify</span>
+              <span class="tag-bad">cmi5 — verify</span>
+              <span class="tag-bad">LTI — verify</span>
+              <span class="tag-bad">Portal islands (no unified identity)</span>
+              <span class="tag-bad">BI / analytics export thin</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Portals can become silos — users in Portal A and Portal B are treated as separate identities, making consolidated analytics and cross-portal user management painful.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Absorb LMS -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">Absorb LMS</div>
+            <div class="pc-segment">Mid-market to enterprise</div>
+          </div>
+          <span class="pc-badge" style="background:var(--plum-l);color:#4A2E80;">Enterprise</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">SCORM 1.2 + 2004 + xAPI</span>
+              <span class="tag-good">Portal multi-tenancy</span>
+              <span class="tag-good">SCIM provisioning</span>
+              <span class="tag-good">SAML + OIDC SSO</span>
+              <span class="tag-good">APIs + webhooks</span>
+              <span class="tag-good">Absorb Analyze (BI)</span>
+              <span class="tag-good">Offline mobile sync</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">cmi5 — verify explicitly</span>
+              <span class="tag-bad">LTI — verify explicitly</span>
+              <span class="tag-bad">Feature gating by plan</span>
+              <span class="tag-bad">Quote-led pricing (no transparency)</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Strong on paper, but cmi5 and LTI are conspicuously absent from public docs — always verify these during procurement before committing, especially if you have modern xAPI-based content.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6: Enterprise -->
+  <div class="slide">
+    <div class="eyebrow">Enterprise LMS</div>
+    <h2>Docebo · Cornerstone</h2>
+    <div class="divider"></div>
+    <div class="g2" style="margin-top: 4px;">
+
+      <!-- Docebo -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">Docebo</div>
+            <div class="pc-segment">Enterprise · Employee + partners + customers</div>
+          </div>
+          <span class="pc-badge" style="background:var(--clay-l);color:#7A3A24;">Large Enterprise</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">Extended enterprise portals</span>
+              <span class="tag-good">SCORM + AICC + xAPI + LTI</span>
+              <span class="tag-good">AI-driven recommendations</span>
+              <span class="tag-good">Mobile offline (Go.Learn)</span>
+              <span class="tag-good">MAU/YAU/RAU pricing models</span>
+              <span class="tag-good">Broad integration marketplace</span>
+              <span class="tag-good">Learning plans + ILT</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">cmi5 — not clearly documented</span>
+              <span class="tag-bad">Custom pricing only</span>
+              <span class="tag-bad">Implementation complexity</span>
+              <span class="tag-bad">Admin UX can overwhelm</span>
+              <span class="tag-bad">Professional services dependency</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Docebo does almost everything — but "almost" matters when cmi5 is your required standard. Community threads suggest limitations. Always verify cmi5 support with a live demo before signing.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cornerstone -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">Cornerstone OnDemand</div>
+            <div class="pc-segment">Large enterprise · Talent suite</div>
+          </div>
+          <span class="pc-badge" style="background:var(--clay-l);color:#7A3A24;">Large Enterprise</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">Ecosystem integrations + APIs</span>
+              <span class="tag-good">SCORM + AICC + xAPI</span>
+              <span class="tag-good">Marketplace (Extend)</span>
+              <span class="tag-good">Enterprise scale</span>
+              <span class="tag-good">Compliance management</span>
+              <span class="tag-good">Advanced analytics</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">cmi5 / LTI — explicitly verify</span>
+              <span class="tag-bad">Quote-based only</span>
+              <span class="tag-bad">Heavy implementation</span>
+              <span class="tag-bad">Not suited for SMB/mid-market</span>
+              <span class="tag-bad">Proprietary tracking alongside standards</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Cornerstone uses a hybrid tracking approach — some content uses SCORM/xAPI, other content uses proprietary Progress APIs. This can create fragmented reporting and lock-in to their data model.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7: Creator / commerce platforms -->
+  <div class="slide">
+    <div class="eyebrow">Creator & commerce platforms</div>
+    <h2>LearnWorlds · Thinkific · Teachable</h2>
+    <div class="divider"></div>
+    <div class="g3" style="margin-top: 4px;">
+
+      <!-- LearnWorlds -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">LearnWorlds</div>
+            <div class="pc-segment">Training businesses + academies</div>
+          </div>
+          <span class="pc-badge" style="background:var(--gold-l);color:#6B4A10;">Commerce</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">SCORM 1.2 + 2004 + HTML5</span>
+              <span class="tag-good">Certificates + reports</span>
+              <span class="tag-good">White-labeled mobile app</span>
+              <span class="tag-good">eCommerce built-in</span>
+              <span class="tag-good">Good creator UX</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">No LTI</span>
+              <span class="tag-bad">xAPI / cmi5 — verify</span>
+              <span class="tag-bad">SSO limited</span>
+              <span class="tag-bad">No SCIM</span>
+              <span class="tag-bad">Enterprise governance thin</span>
+              <span class="tag-bad">HRIS integration weak</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Great for selling courses to external learners. Poor fit if your buyers are enterprise L&D teams who need HRIS sync, SCIM provisioning, compliance workflows, or deep SSO.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thinkific -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">Thinkific</div>
+            <div class="pc-segment">Course creators · Commerce-first</div>
+          </div>
+          <span class="pc-badge" style="background:var(--gold-l);color:#6B4A10;">Commerce</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">Creator analytics</span>
+              <span class="tag-good">Branded mobile app</span>
+              <span class="tag-good">eCommerce + subscriptions</span>
+              <span class="tag-good">Certificate templates</span>
+              <span class="tag-good">Multi environments (Plus)</span>
+              <span class="tag-good">SCORM on Plus plan</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">SCORM gated to Plus tier</span>
+              <span class="tag-bad">No LTI</span>
+              <span class="tag-bad">No xAPI / cmi5</span>
+              <span class="tag-bad">No SCIM</span>
+              <span class="tag-bad">No offline app support</span>
+              <span class="tag-bad">Not enterprise compliant</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Offline learning is explicitly not supported in the Thinkific mobile app. If your learners are in the field, on a plane, or in low-connectivity areas — this is a hard blocker.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teachable -->
+      <div class="platform-card">
+        <div class="pc-header">
+          <div>
+            <div class="pc-name">Teachable</div>
+            <div class="pc-segment">Creators · Coaching · Digital products</div>
+          </div>
+          <span class="pc-badge" style="background:var(--rose-l);color:#6B2038;">Creator</span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-section">
+            <div class="pc-label green-label">What it does brilliantly</div>
+            <div class="tag-row">
+              <span class="tag-good">Creator usability</span>
+              <span class="tag-good">Payments + checkout</span>
+              <span class="tag-good">Certificate templates</span>
+              <span class="tag-good">Progress reports</span>
+              <span class="tag-good">Mobile learner app</span>
+              <span class="tag-good">Webhooks + API</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label red-label">What it misses</div>
+            <div class="tag-row">
+              <span class="tag-bad">No SCORM at all</span>
+              <span class="tag-bad">No xAPI / cmi5</span>
+              <span class="tag-bad">No LTI</span>
+              <span class="tag-bad">No multi-tenant portals</span>
+              <span class="tag-bad">No SSO / SCIM</span>
+              <span class="tag-bad">No compliance reporting</span>
+            </div>
+          </div>
+          <div class="pc-section">
+            <div class="pc-label amber-label">The hidden cost</div>
+            <p>Teachable is purpose-built for individual creators selling courses — not for organizations. Zero standards support means you cannot import existing corporate courseware or prove compliance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8: The gaps nobody talks about -->
+  <div class="slide">
+    <div class="eyebrow">Honest gaps</div>
+    <h2>What almost everyone misses</h2>
+    <div class="divider"></div>
+    <div class="g2" style="margin-top: 4px; align-items: start;">
+      <div>
+        <div class="gap-card">
+          <div class="gap-icon">🔗</div>
+          <div>
+            <div class="gap-platform">All academic LMS (Moodle, Canvas, Blackboard)</div>
+            <div class="gap-title">eCommerce & course selling</div>
+            <div class="gap-text">None of the three major academic platforms have meaningful built-in course selling. Training businesses and course monetization require either expensive plugins or a completely different platform.</div>
+          </div>
+        </div>
+        <div class="gap-card">
+          <div class="gap-icon">📡</div>
+          <div>
+            <div class="gap-platform">Blackboard, Docebo, Cornerstone</div>
+            <div class="gap-title">No LRS — xAPI without a brain</div>
+            <div class="gap-text">These platforms can play xAPI content but don't include a Learning Record Store. xAPI statements are tracked in the gradebook only, losing all the rich analytics xAPI was designed to provide.</div>
+          </div>
+        </div>
+        <div class="gap-card">
+          <div class="gap-icon">📵</div>
+          <div>
+            <div class="gap-platform">Thinkific</div>
+            <div class="gap-title">No offline mobile — a dealbreaker for field teams</div>
+            <div class="gap-text">Explicitly documented: Thinkific mobile does not support offline learning. For healthcare workers, field technicians, retail staff, or anyone on the move — this is a hard stop.</div>
+          </div>
+        </div>
+        <div class="gap-card">
+          <div class="gap-icon">🏗️</div>
+          <div>
+            <div class="gap-platform">Moodle, Canvas</div>
+            <div class="gap-title">Multi-tenancy is bolted on, not built in</div>
+            <div class="gap-text">Neither was designed for true multi-tenant SaaS. Canvas uses sub-accounts; Moodle needs plugins. Neither offers genuine portal-level branding, isolated admin scope, and delegated governance out of the box.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="gap-card">
+          <div class="gap-icon">🧾</div>
+          <div>
+            <div class="gap-platform">Teachable, Thinkific (base)</div>
+            <div class="gap-title">Not compliance-ready</div>
+            <div class="gap-text">No audit trails, no proof-of-completion evidence trail, no SCORM tracking. Regulators asking for training records will find these platforms come up short — they're built for creators, not compliance officers.</div>
+          </div>
+        </div>
+        <div class="gap-card">
+          <div class="gap-icon">🔄</div>
+          <div>
+            <div class="gap-platform">LearnUpon, TalentLMS</div>
+            <div class="gap-title">Portal silos — no unified identity</div>
+            <div class="gap-text">A user in Portal A and Portal B is managed separately. There's no single user record across portals, making consolidated people analytics and cross-portal reporting harder than it should be.</div>
+          </div>
+        </div>
+        <div class="gap-card">
+          <div class="gap-icon">🧩</div>
+          <div>
+            <div class="gap-platform">Nearly all platforms</div>
+            <div class="gap-title">cmi5 support is murky</div>
+            <div class="gap-text">cmi5 is the modern standard for launching xAPI content in LMS contexts — but almost no platform clearly documents it. Most say "xAPI supported" without clarifying whether they handle cmi5 session rules, launch tokens, or AU management correctly.</div>
+          </div>
+        </div>
+        <div class="gap-card">
+          <div class="gap-icon">♿</div>
+          <div>
+            <div class="gap-platform">Creator platforms (Teachable, Thinkific)</div>
+            <div class="gap-title">Accessibility is not a priority</div>
+            <div class="gap-text">WCAG 2.2 conformance, Section 508, EN 301 549 — these aren't prominent in creator platform documentation. For public sector, higher ed, and enterprise procurement, this can be an immediate disqualifier.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S9: Best platform by use case -->
+  <div class="slide">
+    <div class="eyebrow">Decision guide</div>
+    <h2>Best platform by use case</h2>
+    <div class="divider"></div>
+    <div class="g2" style="margin-top: 4px; align-items: start;">
+      <div>
+        <div class="winner" style="background: var(--sky-l); border-color: rgba(74,127,174,0.2);">
+          <div class="winner-ico">🏫</div>
+          <div>
+            <div class="winner-usecase">Higher education · Many external tools</div>
+            <div class="winner-name">Canvas or Moodle</div>
+            <div class="winner-why">Canvas for scale + LTI strength. Moodle for open-source control + SCORM 1.2 + community plugins. Both have offline mobile.</div>
+          </div>
+        </div>
+        <div class="winner" style="background: var(--sage-l); border-color: rgba(106,158,110,0.2);">
+          <div class="winner-ico">🏢</div>
+          <div>
+            <div class="winner-usecase">Corporate compliance + employee training</div>
+            <div class="winner-name">Absorb LMS or Docebo</div>
+            <div class="winner-why">Absorb for SCIM + governance depth. Docebo for extended enterprise + AI. Both support SCORM, xAPI, SSO, mobile offline.</div>
+          </div>
+        </div>
+        <div class="winner" style="background: var(--teal-l); border-color: rgba(58,139,122,0.2);">
+          <div class="winner-ico">⚡</div>
+          <div>
+            <div class="winner-usecase">SMB · Fast launch · Reasonable standards</div>
+            <div class="winner-name">TalentLMS</div>
+            <div class="winner-why">Only SMB platform with published pricing + branches + SCORM/xAPI/cmi5 all documented + OIDC SSO. Low barrier to get started.</div>
+          </div>
+        </div>
+        <div class="winner" style="background: var(--plum-l); border-color: rgba(118,96,168,0.2);">
+          <div class="winner-ico">🌐</div>
+          <div>
+            <div class="winner-usecase">Customer & partner education</div>
+            <div class="winner-name">LearnUpon or Docebo</div>
+            <div class="winner-why">LearnUpon for portals + eCommerce + multi-portal reporting. Docebo for larger enterprise extended-enterprise with branded experiences.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="winner" style="background: var(--gold-l); border-color: rgba(184,144,58,0.2);">
+          <div class="winner-ico">🎓</div>
+          <div>
+            <div class="winner-usecase">Training business · SCORM + certificates + selling</div>
+            <div class="winner-name">LearnWorlds</div>
+            <div class="winner-why">Only creator platform with solid SCORM 1.2 + 2004, certificates, reports, AND eCommerce + white-labeled mobile app. The bridge between creator and LMS.</div>
+          </div>
+        </div>
+        <div class="winner" style="background: var(--clay-l); border-color: rgba(192,107,74,0.2);">
+          <div class="winner-ico">✏️</div>
+          <div>
+            <div class="winner-usecase">Solo creator · Coaching · Digital products</div>
+            <div class="winner-name">Teachable or Thinkific</div>
+            <div class="winner-why">Best creator UX + payments + marketing. Accept the tradeoff: no SCORM, no compliance, no enterprise features. Use only for native content.</div>
+          </div>
+        </div>
+        <div class="winner" style="background: var(--rose-l); border-color: rgba(168,80,104,0.2);">
+          <div class="winner-ico">🏛️</div>
+          <div>
+            <div class="winner-usecase">Government / large institution</div>
+            <div class="winner-name">Blackboard or Cornerstone</div>
+            <div class="winner-why">Mature standards playback (SCORM 1.2/2004/AICC), enterprise procurement track record, LTI support, analytics products. Expect high cost and implementation complexity.</div>
+          </div>
+        </div>
+        <div class="winner" style="background: var(--sage-l); border-color: rgba(106,158,110,0.2);">
+          <div class="winner-ico">🏗️</div>
+          <div>
+            <div class="winner-usecase">Building your own LMS SaaS</div>
+            <div class="winner-name">None — use the gaps above</div>
+            <div class="winner-why">Every platform has a real gap: cmi5, unified identity across portals, offline-first, creator UX + compliance, or transparent pricing. That's your opportunity.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S10: Opportunity map -->
+  <div class="slide" style="border-bottom: none;">
+    <div class="eyebrow">Where to build</div>
+    <h2>The market gaps — your opportunity map</h2>
+    <div class="divider"></div>
+    <div class="g3" style="margin-top: 4px;">
+      <div class="card" style="border-top: 3px solid var(--sage);">
+        <div style="font-size: 22px; margin-bottom: 10px;">🎯</div>
+        <h3>Creator UX + enterprise compliance</h3>
+        <p style="margin-top: 6px;">Teachable/Thinkific have the best creator experience. Enterprise LMS have the compliance tools. Nobody combines both. A platform that feels like Teachable but supports SCORM, SSO, audit trails, and multi-tenant portals would win a large underserved segment.</p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--sky);">
+        <div style="font-size: 22px; margin-bottom: 10px;">📡</div>
+        <h3>Real cmi5 + LRS built in</h3>
+        <p style="margin-top: 6px;">Almost no mainstream LMS clearly documents cmi5 support or includes a proper LRS. Orgs wanting richer analytics than SCORM and better than "xAPI without a store" have no clean option today. First-class cmi5 + embedded LRS is an open gap.</p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--clay);">
+        <div style="font-size: 22px; margin-bottom: 10px;">🔗</div>
+        <h3>Unified identity across portals</h3>
+        <p style="margin-top: 6px;">TalentLMS and LearnUpon both silo users per portal. A platform where one person can be a learner in Portal A and an admin in Portal B — with a single identity, consolidated history, and cross-portal analytics — doesn't exist cleanly today.</p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--plum);">
+        <div style="font-size: 22px; margin-bottom: 10px;">📵</div>
+        <h3>Offline-first for every platform</h3>
+        <p style="margin-top: 6px;">Offline is documented in corporate/academic platforms but often feels bolted on. A genuinely offline-first platform — with queued SCORM events, offline assessments, and conflict resolution — would serve healthcare, retail, and field workforces better than anything available.</p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--gold);">
+        <div style="font-size: 22px; margin-bottom: 10px;">💰</div>
+        <h3>Transparent mid-market pricing</h3>
+        <p style="margin-top: 6px;">Enterprise LMS platforms are all "contact sales." TalentLMS is the only mid-market platform with full public pricing. A platform that offers enterprise-grade features (SAML, SCIM, portals, SCORM 2004) with transparent, per-active-learner pricing fills a clear gap.</p>
+      </div>
+      <div class="card" style="border-top: 3px solid var(--teal);">
+        <div style="font-size: 22px; margin-bottom: 10px;">🧠</div>
+        <h3>Skills layer that actually works</h3>
+        <p style="margin-top: 6px;">Every platform markets "skills," but none have a robust skills taxonomy + inference + career pathway layer with clean data lineage. LinkedIn data shows large-scale skill change by 2030. The platform that maps training to verified skill outcomes — not just completion records — wins the next decade.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LMS Hub Navigation -->
+<script>
+(function() {
+  var SLIDES = [
+    "Cover",
+    "Capability Matrix",
+    "Moodle · Canvas · Blackboard",
+    "TalentLMS · LearnUpon · Absorb",
+    "Docebo · Cornerstone",
+    "LearnWorlds · Thinkific · Teachable",
+    "What Everyone Misses",
+    "Decision Guide",
+    "Market Gaps"
+  ];
+  var TABS = [
+    { label: "Research",  url: "lms_research_presentation.html" },
+    { label: "Explainer", url: "lms_explainer_presentation.html" },
+    { label: "Comparison", url: "lms_comparison_presentation.html", active: true }
+  ];
+
+  /* ── Styles ─────────────────────────────────────────── */
+  var css = `
+    #lms-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      height: 50px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(42,47,53,0.09);
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 0;
+      font-family: 'Nunito', 'Avenir Next', sans-serif;
+    }
+    #lms-nav a { text-decoration: none; }
+    .lnav-hub {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: #2A2F35;
+      padding: 6px 10px 6px 6px;
+      border-radius: 8px;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .lnav-hub:hover { background: #F5F2EB; }
+    .lnav-hub svg { flex-shrink: 0; }
+    .lnav-sep {
+      width: 1px; height: 20px; background: rgba(42,47,53,0.12);
+      margin: 0 10px; flex-shrink: 0;
+    }
+    .lnav-tabs { display: flex; gap: 2px; }
+    .lnav-tab {
+      font-size: 12px; font-weight: 500; color: #838C99;
+      padding: 5px 11px; border-radius: 8px;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+    }
+    .lnav-tab:hover { background: #F5F2EB; color: #2A2F35; }
+    .lnav-tab.active {
+      background: #EAF2EB; color: #4A8A4E; font-weight: 600;
+    }
+    .lnav-right {
+      margin-left: auto; display: flex; align-items: center; gap: 10px;
+    }
+    .lnav-counter {
+      font-size: 11px; font-weight: 500; color: #838C99; white-space: nowrap;
+    }
+    .lnav-dots { display: flex; gap: 5px; align-items: center; }
+    .lnav-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(42,47,53,0.15); cursor: pointer;
+      border: none; padding: 0; flex-shrink: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .lnav-dot:hover { background: rgba(42,47,53,0.35); transform: scale(1.2); }
+    .lnav-dot.active { background: #C06B4A; transform: scale(1.1); }
+    .lnav-dot[title] { position: relative; }
+  `;
+  var styleEl = document.createElement('style');
+  styleEl.textContent = css;
+  document.head.appendChild(styleEl);
+
+  /* ── Build nav HTML ──────────────────────────────────── */
+  var dotsHtml = SLIDES.map(function(s, i) {
+    return '<button class="lnav-dot' + (i === 0 ? ' active' : '') +
+           '" title="' + s + '" data-idx="' + i + '"></button>';
+  }).join('');
+
+  var tabsHtml = TABS.map(function(t) {
+    return '<a class="lnav-tab' + (t.active ? ' active' : '') +
+           '" href="' + t.url + '">' + t.label + '</a>';
+  }).join('');
+
+  var nav = document.createElement('div');
+  nav.id = 'lms-nav';
+  nav.innerHTML =
+    '<a class="lnav-hub" href="index.html">' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" fill="none">' +
+        '<path d="M8.5 11.5L4 7l4.5-4.5" stroke="#4A5260" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg>' +
+      'Hub' +
+    '</a>' +
+    '<div class="lnav-sep"></div>' +
+    '<div class="lnav-tabs">' + tabsHtml + '</div>' +
+    '<div class="lnav-right">' +
+      '<span class="lnav-counter" id="lnav-counter">1 / ' + SLIDES.length + '</span>' +
+      '<div class="lnav-dots" id="lnav-dots">' + dotsHtml + '</div>' +
+    '</div>';
+
+  document.body.insertBefore(nav, document.body.firstChild);
+  document.body.style.paddingTop = '50px';
+
+  /* ── Scroll spy ─────────────────────────────────────── */
+  var slideEls = document.querySelectorAll('.slide');
+  var dots = document.querySelectorAll('.lnav-dot');
+  var counter = document.getElementById('lnav-counter');
+
+  function setActive(idx) {
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === idx); });
+    counter.textContent = (idx + 1) + ' / ' + SLIDES.length;
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var idx = Array.prototype.indexOf.call(slideEls, entry.target);
+        if (idx !== -1) setActive(idx);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  slideEls.forEach(function(s) { observer.observe(s); });
+
+  dots.forEach(function(dot, i) {
+    dot.addEventListener('click', function() {
+      slideEls[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+</script>
+
