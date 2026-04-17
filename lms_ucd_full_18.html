@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Use Case Diagram — LMS Research Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --av:'Nunito','Avenir Next',sans-serif;
+  --cream:#FAFAF7;--sand:#F5F2EB;--warm:#EDE9E0;
+  --ink:#2A2F35;--ink2:#4A5260;--ink3:#838C99;
+  --border:rgba(42,47,53,0.09);--border2:rgba(42,47,53,0.05);
+  --sage:#6A9E6E;--sage-l:#EAF2EB;--sage-d:#3D6B41;
+  --clay:#C4785A;--clay-l:#FBF1EB;
+  --sky:#4A7FAE;--sky-l:#EAF1F8;
+  --violet:#7A6BB5;--violet-l:#EEE9FB;
+}
+html,body{background:var(--cream);color:var(--ink);font-family:var(--av);min-height:100vh}
+
+/* ── SHARED NAV ── */
+.snav{height:52px;padding:0 48px;background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+.snav-logo{font-size:14px;font-weight:600;color:var(--ink);text-decoration:none;white-space:nowrap;flex-shrink:0}
+.snav-logo em{color:var(--sage);font-style:normal}
+.snav-links{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none}
+.snav-links::-webkit-scrollbar{display:none}
+.snav-a{font-size:12px;font-weight:500;color:var(--ink3);text-decoration:none;padding:5px 10px;border-radius:6px;transition:all .15s;white-space:nowrap}
+.snav-a:hover{color:var(--ink);background:var(--sand)}
+.snav-a.cur{color:var(--sage);background:var(--sage-l)}
+.snav-badge{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--sage);text-transform:uppercase;background:var(--sage-l);padding:4px 10px;border-radius:20px;margin-left:auto;flex-shrink:0}
+
+/* ── LAYOUT ── */
+.wrap{display:flex;height:calc(100vh - 52px);font-family:var(--av)}
+
+/* ── LEFT ── */
+.left{flex:0 0 310px;background:white;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;scrollbar-width:thin;scrollbar-color:var(--warm) transparent}
+.left::-webkit-scrollbar{width:3px}
+.left::-webkit-scrollbar-thumb{background:var(--warm);border-radius:2px}
+
+.left-top{padding:18px 18px 12px;border-bottom:1px solid var(--border2)}
+.left-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:10px}
+.cat-filter{display:flex;flex-wrap:wrap;gap:5px}
+.cat-btn{font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:20px;border:0.5px solid var(--border);background:var(--sand);color:var(--ink2);cursor:pointer;transition:all .15s;font-family:var(--av)}
+.cat-btn:hover{background:var(--warm);color:var(--ink)}
+.cat-btn.active{background:var(--sage-l);color:var(--sage-d);border-color:rgba(106,158,110,.3)}
+
+.uc-list{padding:12px;flex:1}
+.vis-cnt{font-size:10px;color:var(--ink3);padding:0 4px;margin-bottom:8px}
+
+.uc-row{display:flex;align-items:center;gap:0;margin-bottom:4px;border-radius:10px;border:0.5px solid var(--border);background:white;cursor:pointer;transition:all .18s;overflow:hidden;text-decoration:none;color:inherit}
+.uc-row:hover{box-shadow:0 3px 10px rgba(42,47,53,0.09);border-color:rgba(42,47,53,0.16);transform:translateY(-1px)}
+.uc-row.active{border-color:rgba(106,158,110,.4);background:var(--sage-l);box-shadow:0 2px 8px rgba(106,158,110,.12)}
+
+.actor-col{flex:0 0 70px;padding:10px 8px;border-right:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--sand);min-height:44px}
+.actor-tag{font-size:9px;color:var(--ink3);text-align:center;line-height:1.3;font-weight:500}
+
+.main-col{flex:1;padding:8px 10px;min-width:0}
+.uc-id{font-size:9px;color:var(--ink3);font-weight:600;margin-bottom:1px}
+.uc-row.active .uc-id{color:var(--sage-d)}
+.uc-name{font-size:11.5px;font-weight:500;color:var(--ink);line-height:1.3}
+.uc-row.active .uc-name{color:var(--sage-d)}
+
+.rel-col{padding:8px 8px 8px 4px;display:flex;flex-direction:column;gap:3px;align-items:flex-end;flex-shrink:0}
+.rt{font-size:8.5px;padding:2px 6px;border-radius:10px;white-space:nowrap;font-weight:600}
+.rt-inc{background:var(--sage-l);color:var(--sage-d);border:0.5px solid rgba(106,158,110,.3)}
+.rt-ext{background:var(--clay-l);color:#7A3E28;border:0.5px solid rgba(196,120,90,.3)}
+
+.sep{height:1px;background:var(--border);margin:8px 4px;opacity:.6}
+
+/* ── RIGHT ── */
+.right{flex:1;overflow-y:auto;background:var(--cream);scrollbar-width:thin;scrollbar-color:var(--warm) transparent;min-width:0}
+.right::-webkit-scrollbar{width:3px}
+.right::-webkit-scrollbar-thumb{background:var(--warm);border-radius:2px}
+
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--ink3);gap:10px;padding:40px}
+.ph-icon{font-size:36px;opacity:.3}
+.ph-txt{font-size:13px;font-style:italic}
+
+.dp{display:none}
+.dp.active{display:block;animation:fadeUp .2s ease-out}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.dp-inner{padding:36px 40px;max-width:680px}
+
+.dp-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:6px}
+.dp-title{font-size:28px;font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:22px}
+.divider{width:32px;height:3px;background:var(--sage);border-radius:2px;margin-bottom:22px}
+
+.dp-section{margin-bottom:18px}
+.dp-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:7px}
+.dp-pills{display:flex;flex-wrap:wrap;gap:6px}
+.ap{font-size:11.5px;font-weight:500;padding:4px 12px;border-radius:20px;background:var(--sky-l);color:#2A5880;border:0.5px solid rgba(74,127,174,.2)}
+.rp{font-size:10px;font-weight:600;padding:3px 9px;border-radius:10px}
+.rp-inc{background:var(--sage-l);color:var(--sage-d);border:0.5px solid rgba(106,158,110,.3)}
+.rp-ext{background:var(--clay-l);color:#7A3E28;border:0.5px solid rgba(196,120,90,.3)}
+
+.flow-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+
+.step{background:white;border:0.5px solid var(--border);border-left:3px solid var(--sage);border-radius:10px;padding:11px 16px;margin-bottom:6px;display:flex;gap:12px;align-items:flex-start;transition:box-shadow .15s, transform .12s}
+.step:hover{box-shadow:0 3px 10px rgba(42,47,53,0.08);transform:translateX(2px)}
+.sn{font-size:10px;font-weight:700;color:var(--sage);flex-shrink:0;margin-top:2px;width:16px;text-align:center}
+.sb{flex:1;min-width:0}
+.st-t{font-size:13px;font-weight:600;color:var(--ink);line-height:1.3}
+.st-s{font-size:11.5px;color:var(--ink2);margin-top:2px;font-weight:300}
+
+.sg{background:var(--sage-l);border-left-color:var(--sage-d);border-color:rgba(106,158,110,.25)}
+.sg .sn{color:var(--sage-d)}.sg .st-t{color:var(--sage-d)}.sg .st-s{color:var(--sage)}
+.sa{background:var(--clay-l);border-left-color:var(--clay);border-color:rgba(196,120,90,.2)}
+.sa .sn{color:var(--clay)}.sa .st-t{color:#7A3E28}.sa .st-s{color:var(--clay)}
+
+.arr{padding:0 0 0 30px;color:var(--border);font-size:12px;height:10px;display:flex;align-items:center}
+.arr::before{content:'│';font-family:monospace;color:var(--warm)}
+</style>
+</head>
+<body>
+
+<nav class="snav">
+  <a class="snav-logo" href="index.html">LMS <em>Research Hub</em></a>
+  <div class="snav-links">
+    <a class="snav-a" href="lms_research_presentation.html">Research</a>
+    <a class="snav-a" href="lms_explainer_presentation.html">Explainer</a>
+    <a class="snav-a" href="lms_comparison_presentation.html">Comparison</a>
+    <a class="snav-a cur" href="lms_ucd_full_18.html">Use Cases</a>
+  </div>
+  <span class="snav-badge">2026</span>
+</nav>
+
+<div class="wrap">
+<aside class="left">
+  <div class="left-top">
+    <div class="left-title">LMS SaaS — UC-001 · UC-018</div>
+    <div class="cat-filter">
+      <button class="cat-btn active" onclick="filterCat('all',this)">All <strong>18</strong></button>
+      <button class="cat-btn" onclick="filterCat('core',this)">Core <strong>6</strong></button>
+      <button class="cat-btn" onclick="filterCat('identity',this)">Identity <strong>2</strong></button>
+      <button class="cat-btn" onclick="filterCat('integrations',this)">Integrations <strong>4</strong></button>
+      <button class="cat-btn" onclick="filterCat('commerce',this)">Commerce <strong>3</strong></button>
+      <button class="cat-btn" onclick="filterCat('platform',this)">Platform <strong>3</strong></button>
+    </div>
+  </div>
+  <div class="uc-list">
+    <div class="vis-cnt" id="vis-cnt">18 use cases</div>
+
+    <div class="uc-row" data-cat="core" onclick="show('uc001',this)"><div class="actor-col"><span class="actor-tag">Platform<br>Admin</span></div><div class="main-col"><div class="uc-id">UC-001</div><div class="uc-name">Onboard new tenant</div></div><div class="rel-col"><span class="rt rt-inc">Write audit log</span></div></div>
+    <div class="uc-row" data-cat="core" onclick="show('uc002',this)"><div class="actor-col"><span class="actor-tag">Content<br>Author</span></div><div class="main-col"><div class="uc-id">UC-002</div><div class="uc-name">Publish SCORM course</div></div><div class="rel-col"><span class="rt rt-inc">Validate SCORM</span></div></div>
+    <div class="uc-row" data-cat="core" onclick="show('uc003',this)"><div class="actor-col"><span class="actor-tag">Learner</span></div><div class="main-col"><div class="uc-id">UC-003</div><div class="uc-name">Complete a course</div></div><div class="rel-col"><span class="rt rt-inc">Issue certificate</span></div></div>
+    <div class="uc-row" data-cat="core" onclick="show('uc004',this)"><div class="actor-col"><span class="actor-tag">Admin</span></div><div class="main-col"><div class="uc-id">UC-004</div><div class="uc-name">Bulk enroll users</div></div><div class="rel-col"><span class="rt rt-inc">Check prereqs</span></div></div>
+    <div class="uc-row" data-cat="core" onclick="show('uc005',this)"><div class="actor-col"><span class="actor-tag">Learner</span></div><div class="main-col"><div class="uc-id">UC-005</div><div class="uc-name">Resume course</div></div><div class="rel-col"><span class="rt rt-ext">Resume bookmark</span></div></div>
+    <div class="uc-row" data-cat="core" onclick="show('uc006',this)"><div class="actor-col"><span class="actor-tag">Reporting<br>Admin</span></div><div class="main-col"><div class="uc-id">UC-006</div><div class="uc-name">Compliance report</div></div><div class="rel-col"><span class="rt rt-inc">Write audit log</span></div></div>
+
+    <div class="sep" data-sep></div>
+
+    <div class="uc-row" data-cat="identity" onclick="show('uc007',this)"><div class="actor-col"><span class="actor-tag">Tenant<br>Admin</span></div><div class="main-col"><div class="uc-id">UC-007</div><div class="uc-name">Configure OIDC SSO</div></div><div class="rel-col"></div></div>
+    <div class="uc-row" data-cat="identity" onclick="show('uc016',this)"><div class="actor-col"><span class="actor-tag">IdP / Okta<br>/ Entra</span></div><div class="main-col"><div class="uc-id">UC-016</div><div class="uc-name">Provision via SCIM</div></div><div class="rel-col"><span class="rt rt-inc">Write audit log</span></div></div>
+
+    <div class="sep" data-sep></div>
+
+    <div class="uc-row" data-cat="integrations" onclick="show('uc008',this)"><div class="actor-col"><span class="actor-tag">Integration<br>Admin</span></div><div class="main-col"><div class="uc-id">UC-008</div><div class="uc-name">Sync users from HRIS</div></div><div class="rel-col"><span class="rt rt-inc">Send notification</span></div></div>
+    <div class="uc-row" data-cat="integrations" onclick="show('uc011',this)"><div class="actor-col"><span class="actor-tag">Integration<br>Admin</span></div><div class="main-col"><div class="uc-id">UC-011</div><div class="uc-name">Register webhook</div></div><div class="rel-col"><span class="rt rt-inc">Sign HMAC</span></div></div>
+    <div class="uc-row" data-cat="integrations" onclick="show('uc017',this)"><div class="actor-col"><span class="actor-tag">Reporting<br>Admin</span></div><div class="main-col"><div class="uc-id">UC-017</div><div class="uc-name">xAPI activity in LRS</div></div><div class="rel-col"><span class="rt rt-inc">Emit xAPI stmts</span></div></div>
+    <div class="uc-row" data-cat="integrations" onclick="show('uc018',this)"><div class="actor-col"><span class="actor-tag">Instructor</span></div><div class="main-col"><div class="uc-id">UC-018</div><div class="uc-name">Schedule vILT session</div></div><div class="rel-col"><span class="rt rt-ext">Create Zoom mtg</span></div></div>
+
+    <div class="sep" data-sep></div>
+
+    <div class="uc-row" data-cat="commerce" onclick="show('uc009',this)"><div class="actor-col"><span class="actor-tag">Learner</span></div><div class="main-col"><div class="uc-id">UC-009</div><div class="uc-name">Purchase a course</div></div><div class="rel-col"><span class="rt rt-ext">Apply coupon</span></div></div>
+    <div class="uc-row" data-cat="commerce" onclick="show('uc010',this)"><div class="actor-col"><span class="actor-tag">Admin</span></div><div class="main-col"><div class="uc-id">UC-010</div><div class="uc-name">Manage certificates</div></div><div class="rel-col"><span class="rt rt-ext">Revoke cert</span></div></div>
+    <div class="uc-row" data-cat="commerce" onclick="show('uc015',this)"><div class="actor-col"><span class="actor-tag">Content<br>Author</span></div><div class="main-col"><div class="uc-id">UC-015</div><div class="uc-name">Create native quiz</div></div><div class="rel-col"><span class="rt rt-inc">Server grading</span></div></div>
+
+    <div class="sep" data-sep></div>
+
+    <div class="uc-row" data-cat="platform" onclick="show('uc012',this)"><div class="actor-col"><span class="actor-tag">Learner<br>(mobile)</span></div><div class="main-col"><div class="uc-id">UC-012</div><div class="uc-name">Learn offline (mobile)</div></div><div class="rel-col"><span class="rt rt-inc">Encrypt to device</span></div></div>
+    <div class="uc-row" data-cat="platform" onclick="show('uc013',this)"><div class="actor-col"><span class="actor-tag">Tenant<br>Admin</span></div><div class="main-col"><div class="uc-id">UC-013</div><div class="uc-name">White-label portal</div></div><div class="rel-col"><span class="rt rt-inc">Write audit log</span></div></div>
+    <div class="uc-row" data-cat="platform" onclick="show('uc014',this)"><div class="actor-col"><span class="actor-tag">Security<br>Auditor</span></div><div class="main-col"><div class="uc-id">UC-014</div><div class="uc-name">Export audit log</div></div><div class="rel-col"></div></div>
+  </div>
+</aside>
+
+<main class="right">
+  <div class="ph" id="ph"><div class="ph-icon">📋</div><div class="ph-txt">← select a use case to view its flow</div></div>
+
+  <div class="dp" id="uc001"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-001</div><div class="dp-title">Onboard new tenant</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Platform Admin</span><span class="ap">Tenant Admin</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Write audit log</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Create tenant record</div><div class="st-s">name · subdomain · plan · region</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Provision root portal</div><div class="st-s">default branding · feature flags</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Assign tenant admin role</div><div class="st-s">RBAC seed · invite email sent</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Configure OIDC SSO</div><div class="st-s">discovery URL · client credentials</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">5</div><div class="sb"><div class="st-t">Test SSO connection</div><div class="st-s">dry-run OIDC auth code flow</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Tenant active</div><div class="st-s">audit log written · welcome email sent</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc002"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-002</div><div class="dp-title">Publish SCORM course</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Content Author</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Validate SCORM package</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Upload SCORM ZIP</div><div class="st-s">max 500 MB · multipart upload</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Validate manifest</div><div class="st-s">parse imsmanifest.xml · detect version</div></div></div><div class="arr"></div>
+    <div class="step sa"><div class="sn">!</div><div class="sb"><div class="st-t">Virus scan</div><div class="st-s">ClamAV · pass → continue · fail → error returned</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Extract &amp; store assets</div><div class="st-s">object storage · CDN path prefix</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Configure course settings</div><div class="st-s">pass threshold · max attempts</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Publish to catalog</div><div class="st-s">version incremented · search indexed</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc003"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-003</div><div class="dp-title">Complete a course</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Learner</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Check prerequisites</span><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Issue certificate</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Browse catalog &amp; enroll</div><div class="st-s">enrollment record created</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Launch SCORM player</div><div class="st-s">signed URL · attempt created</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Complete content &amp; quiz</div><div class="st-s">LMSFinish · score persisted</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Enrollment marked complete</div><div class="st-s">status → completed</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Certificate issued</div><div class="st-s">PDF generated · verify URL live</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc004"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-004</div><div class="dp-title">Bulk enroll users</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Admin</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Check prerequisites</span><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Send notification</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Select users or group</div><div class="st-s">up to 500 per API call</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Check prerequisites</div><div class="st-s">per-user prereq validation</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Set due date &amp; options</div><div class="st-s">reminder schedule</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Create enrollment records</div><div class="st-s">idempotent · duplicates ignored</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Notify learners</div><div class="st-s">enrollment confirmation email sent</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc005"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-005</div><div class="dp-title">Resume in-progress course</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Learner</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-ext">&lt;&lt;extend&gt;&gt; Resume from bookmark</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Re-launch course</div><div class="st-s">existing enrollment found</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Load last SCORM attempt</div><div class="st-s">lesson_location · suspend_data</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">LMSGetValue returns bookmark</div><div class="st-s">content resumes from saved point</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Learner continues</div><div class="st-s">no progress lost</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc006"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-006</div><div class="dp-title">Run compliance report</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Reporting Admin</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Write audit log</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Set filters</div><div class="st-s">course · group · date range · status</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Generate report async</div><div class="st-s">for tenants &gt; 10k enrollments</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">View dashboard</div><div class="st-s">complete · overdue · not started counts</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Export CSV / XLSX</div><div class="st-s">download or scheduled email attachment</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc007"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-007</div><div class="dp-title">Configure OIDC SSO</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Tenant Admin</span><span class="ap">Integration Admin</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><em style="font-size:11px;color:var(--ink3)">none</em></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Enter IdP details</div><div class="st-s">discovery URL · client_id · client_secret</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Map IdP claims</div><div class="st-s">email · name · department · role</div></div></div><div class="arr"></div>
+    <div class="step sa"><div class="sn">!</div><div class="sb"><div class="st-t">Test connection</div><div class="st-s">dry-run OIDC flow · fix config if needed</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Activate SSO</div><div class="st-s">TENANT_IDP record set active</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">SSO live</div><div class="st-s">domain-based IdP discovery active</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc008"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-008</div><div class="dp-title">Sync users from HRIS</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Integration Admin</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Send notification</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Configure HRIS connector</div><div class="st-s">Workday / BambooHR / CSV-SFTP</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Map fields &amp; schedule</div><div class="st-s">department · manager → daily sync</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Run sync job</div><div class="st-s">create · update · deactivate users</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Auto-enroll on group change</div><div class="st-s">enrollment rules evaluated</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Sync complete</div><div class="st-s">audit log · error report if any</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc009"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-009</div><div class="dp-title">Purchase a course</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Learner</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-ext">&lt;&lt;extend&gt;&gt; Apply coupon code</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">View storefront &amp; pricing</div><div class="st-s">public page · no login required</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Stripe Checkout session</div><div class="st-s">Stripe Elements · PCI SAQ A scope</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">payment.succeeded webhook</div><div class="st-s">HMAC signature verified</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Order created · enrollment triggered</div><div class="st-s">invoice PDF generated and emailed</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Access granted</div><div class="st-s">course appears in learner dashboard</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc010"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-010</div><div class="dp-title">Issue &amp; manage certificates</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Admin</span><span class="ap">Learner</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Generate PDF</span><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Publish verify URL</span><span class="rp rp-ext">&lt;&lt;extend&gt;&gt; Revoke certificate</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Course completion detected</div><div class="st-s">enrollment status → completed</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Generate certificate PDF</div><div class="st-s">HTML template · variable substitution</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Assign verification code</div><div class="st-s">globally unique UUID</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Store PDF &amp; notify learner</div><div class="st-s">object storage · email sent</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Public verify URL live</div><div class="st-s">/verify/{code} · no login required</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc011"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-011</div><div class="dp-title">Register webhook</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Integration Admin</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Sign HMAC-SHA256</span><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Retry with backoff</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">POST /webhooks</div><div class="st-s">HTTPS URL · events[] · HMAC secret</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">System fires subscribed event</div><div class="st-s">e.g. enrollment.completed</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">HTTPS POST + HMAC signature</div><div class="st-s">X-LMS-Signature header</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Retry on failure</div><div class="st-s">1s · 5s · 30s · 5min · 30min backoff</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Delivery logged</div><div class="st-s">status · response code · duration stored</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc012"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-012</div><div class="dp-title">Learn offline on mobile</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Learner (mobile)</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Encrypt to device</span><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Queue offline events</span><span class="rp rp-ext">&lt;&lt;extend&gt;&gt; Sync on reconnect</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Download course on WiFi</div><div class="st-s">encrypted to device storage</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Go offline · complete content</div><div class="st-s">SCORM in WKWebView · quiz answered</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Events queued locally (SQLite)</div><div class="st-s">progress · CMI data buffered</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Reconnect — sync to server</div><div class="st-s">timestamp-based conflict resolution</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Progress updated</div><div class="st-s">certificate issued if complete</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc013"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-013</div><div class="dp-title">Configure white-label portal</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Tenant Admin</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Write audit log</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Set custom domain</div><div class="st-s">DNS CNAME · Let's Encrypt SSL</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Upload logo &amp; choose colors</div><div class="st-s">live preview before save</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Configure email sender</div><div class="st-s">from-name · from-address · SPF/DKIM</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Set certificate template</div><div class="st-s">background image · layout · fonts</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Portal live on custom domain</div><div class="st-s">branding served via CDN</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc014"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-014</div><div class="dp-title">Export audit log</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Security Auditor</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><em style="font-size:11px;color:var(--ink3)">none</em></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Set filters</div><div class="st-s">date · actor · action · resource type</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Choose format</div><div class="st-s">CSV or CEF (SIEM-compatible)</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Async export generated</div><div class="st-s">append-only table · tamper-proof</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Download link delivered</div><div class="st-s">7-year retention guaranteed</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc015"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-015</div><div class="dp-title">Create native quiz</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Content Author</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Server-side grading</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Add questions from bank</div><div class="st-s">MCQ · multi-select · T/F · matching</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Configure settings</div><div class="st-s">pass % · max attempts · time limit</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Learner takes quiz</div><div class="st-s">server-side timer enforced</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Server-side grading</div><div class="st-s">answers never exposed via API</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Result shown · enrollment updated</div><div class="st-s">certificate triggered if passed</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc016"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-016</div><div class="dp-title">Provision users via SCIM</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">IdP / Okta / Entra ID</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Write audit log</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">POST /scim/v2/Users</div><div class="st-s">RFC 7644 · bearer token auth</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">JIT provision or update user</div><div class="st-s">email · name · externalId mapped</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Sync group membership</div><div class="st-s">SCIM group → LMS group</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Auto-enroll rules fire</div><div class="st-s">group membership → course enrollment</div></div></div><div class="arr"></div>
+    <div class="step sa"><div class="sn">!</div><div class="sb"><div class="st-t">PATCH active=false on termination</div><div class="st-s">deactivated within 60s · tokens revoked</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc017"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-017</div><div class="dp-title">View xAPI activity in LRS</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Learner</span><span class="ap">Reporting Admin</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-inc">&lt;&lt;include&gt;&gt; Emit xAPI statements</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">cmi5 AU launched</div><div class="st-s">fetch URL · session token issued</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">xAPI statements emitted</div><div class="st-s">initialized · passed · terminated</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">LRS validates &amp; stores</div><div class="st-s">tenant-scoped · xAPI 1.0.3 compliant</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Reporting admin queries</div><div class="st-s">GET /xapi/statements with full filter set</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Analytics dashboard updated</div><div class="st-s">verb frequency · completion trends</div></div></div>
+  </div></div>
+
+  <div class="dp" id="uc018"><div class="dp-inner">
+    <div class="dp-eyebrow">UC-018</div><div class="dp-title">Schedule &amp; run vILT session</div><div class="divider"></div>
+    <div class="dp-section"><div class="dp-lbl">Actors</div><div class="dp-pills"><span class="ap">Instructor</span></div></div>
+    <div class="dp-section"><div class="dp-lbl">Relationships</div><div class="dp-pills"><span class="rp rp-ext">&lt;&lt;extend&gt;&gt; Create Zoom meeting</span></div></div>
+    <div class="flow-lbl">Flow</div>
+    <div class="step"><div class="sn">1</div><div class="sb"><div class="st-t">Create ILT session in LMS</div><div class="st-s">date · capacity · enrolled learners</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">2</div><div class="sb"><div class="st-t">Zoom meeting auto-created</div><div class="st-s">Zoom REST API · join link stored</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">3</div><div class="sb"><div class="st-t">Learners notified</div><div class="st-s">calendar invite · reminder email</div></div></div><div class="arr"></div>
+    <div class="step"><div class="sn">4</div><div class="sb"><div class="st-t">Session ends → Zoom webhook</div><div class="st-s">attendance pulled · duration recorded</div></div></div><div class="arr"></div>
+    <div class="step sg"><div class="sn">✓</div><div class="sb"><div class="st-t">Enrollment marked complete</div><div class="st-s">attendance report saved</div></div></div>
+  </div></div>
+</main>
+</div>
+
+<script>
+const CAT_MAP={uc001:'core',uc002:'core',uc003:'core',uc004:'core',uc005:'core',uc006:'core',uc007:'identity',uc016:'identity',uc008:'integrations',uc011:'integrations',uc017:'integrations',uc018:'integrations',uc009:'commerce',uc010:'commerce',uc015:'commerce',uc012:'platform',uc013:'platform',uc014:'platform'};
+let curUc=null;
+function show(id,row){
+  document.querySelectorAll('.uc-row').forEach(r=>r.classList.remove('active'));
+  document.querySelectorAll('.dp').forEach(p=>p.classList.remove('active'));
+  row.classList.add('active');
+  document.getElementById('ph').style.display='none';
+  document.getElementById(id).classList.add('active');
+  curUc=id;
+}
+function filterCat(cat,btn){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  let vis=0;
+  document.querySelectorAll('.uc-row').forEach(r=>{
+    const ok=cat==='all'||r.dataset.cat===cat;
+    r.style.display=ok?'flex':'none';
+    if(ok)vis++;
+  });
+  document.querySelectorAll('[data-sep]').forEach(s=>{s.style.display=cat==='all'?'block':'none'});
+  document.getElementById('vis-cnt').textContent=vis+' use case'+(vis!==1?'s':'');
+  if(curUc&&cat!=='all'&&CAT_MAP[curUc]!==cat){
+    document.querySelectorAll('.dp').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.uc-row').forEach(r=>r.classList.remove('active'));
+    document.getElementById('ph').style.display='flex';
+    curUc=null;
+  }
+}
+</script>
+</body>
+</html>

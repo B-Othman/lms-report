@@ -1,5 +1,27 @@
 
 <style>
+.snav{font-family:'Nunito','Avenir Next',sans-serif;height:52px;padding:0 48px;background:#fff;border-bottom:1px solid rgba(42,47,53,0.09);display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100}
+.snav-logo{font-size:14px;font-weight:600;color:#2A2F35;text-decoration:none;white-space:nowrap;flex-shrink:0}
+.snav-logo em{color:#6A9E6E;font-style:normal}
+.snav-links{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none}
+.snav-links::-webkit-scrollbar{display:none}
+.snav-a{font-size:12px;font-weight:500;color:#838C99;text-decoration:none;padding:5px 10px;border-radius:6px;transition:all .15s;white-space:nowrap;font-family:'Nunito','Avenir Next',sans-serif}
+.snav-a:hover{color:#2A2F35;background:#F5F2EB}
+.snav-a.cur{color:#6A9E6E;background:#EAF2EB}
+.snav-badge{font-size:10px;font-weight:700;letter-spacing:2px;color:#6A9E6E;text-transform:uppercase;background:#EAF2EB;padding:4px 10px;border-radius:20px;margin-left:auto;flex-shrink:0;font-family:'Nunito','Avenir Next',sans-serif}
+</style>
+<nav class="snav">
+  <a class="snav-logo" href="index.html">LMS <em>Research Hub</em></a>
+  <div class="snav-links">
+    <a class="snav-a" href="lms_research_presentation.html">Research</a>
+    <a class="snav-a" href="lms_explainer_presentation.html">Explainer</a>
+    <a class="snav-a cur" href="lms_comparison_presentation.html">Comparison</a>
+    <a class="snav-a" href="lms_ucd_full_18.html">Use Cases</a>
+  </div>
+  <span class="snav-badge">2026</span>
+</nav>
+
+<style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {

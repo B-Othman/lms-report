@@ -39,6 +39,9 @@
     }
     .logo { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
     .logo span { color: var(--sage); }
+    .hub-links { display: flex; gap: 2px; }
+    .hub-link { font-size: 12px; font-weight: 500; color: var(--ink3); text-decoration: none; padding: 5px 10px; border-radius: 6px; transition: all .15s; }
+    .hub-link:hover { color: var(--ink); background: var(--sand); }
     .badge {
       font-size: 10px; font-weight: 700; letter-spacing: 2px;
       color: var(--sage); text-transform: uppercase;
@@ -116,6 +119,11 @@
     .card-comparison .card-eyebrow { color: var(--clay); }
     .card-comparison .dot { background: var(--clay); }
 
+    .card-ucd .card-header { background: linear-gradient(145deg, #FAFAFF 0%, #EDE9F8 100%); }
+    .card-ucd .card-eyebrow { color: #7A6BB5; }
+    .card-ucd .dot { background: #7A6BB5; }
+
+
     footer {
       padding: 28px 52px;
       border-top: 1px solid var(--border);
@@ -135,6 +143,12 @@
 
   <header>
     <div class="logo">LMS <span>Research Hub</span></div>
+    <nav class="hub-links">
+      <a class="hub-link" href="lms_research_presentation.html">Research</a>
+      <a class="hub-link" href="lms_explainer_presentation.html">Explainer</a>
+      <a class="hub-link" href="lms_comparison_presentation.html">Comparison</a>
+      <a class="hub-link" href="lms_ucd_full_18.html">Use Cases</a>
+    </nav>
     <div class="badge">2026</div>
   </header>
 
@@ -217,12 +231,35 @@
         </div>
       </a>
 
+      <!-- Use Case Diagram -->
+      <a class="card card-ucd" href="lms_ucd_full_18.html">
+        <div class="card-header">
+          <span class="card-icon">📋</span>
+          <div class="card-eyebrow" style="color:#7A6BB5">Use Case Diagram</div>
+          <div class="card-title">LMS Use Cases:<br>UC-001 to UC-018</div>
+          <p class="card-desc">Interactive use case diagram covering all 18 platform flows — from tenant onboarding and SCORM publishing to SCIM provisioning, webhooks, and vILT sessions.</p>
+          <div class="tags">
+            <span class="tag">18 use cases</span>
+            <span class="tag">Flow diagrams</span>
+            <span class="tag">Actors & relations</span>
+            <span class="tag">Filterable</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="card-meta">
+            <span class="dot" style="background:#7A6BB5"></span>
+            <span>Interactive</span>
+          </div>
+          <span class="arrow">→</span>
+        </div>
+      </a>
+
     </div>
   </main>
 
   <footer>
     <p>LMS Research Hub · 2026</p>
-    <p>3 presentations · 30 slides total</p>
+    <p>4 documents · 3 presentations · 30 slides · 18 use cases</p>
   </footer>
 
 </body>
