@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS · Architecture Building Blocks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:   #0B0D14;
+      --bg2:  #111420;
+      --bg3:  #181C2C;
+      --border: rgba(255,255,255,0.07);
+
+      --t1: #E8EAF2;
+      --t2: #9DA3BA;
+      --t3: #4E5470;
+
+      --business:    #8B83F0; --business-bg:  rgba(139,131,240,.07); --business-bd:  rgba(139,131,240,.25);
+      --app:         #2EC99A; --app-bg:       rgba(46,201,154,.07);  --app-bd:       rgba(46,201,154,.25);
+      --security:    #F06B6A; --security-bg:  rgba(240,107,106,.07); --security-bd:  rgba(240,107,106,.25);
+      --data:        #EFB544; --data-bg:      rgba(239,181,68,.07);  --data-bd:      rgba(239,181,68,.25);
+      --tech:        #5BAEE8; --tech-bg:      rgba(91,174,232,.07);  --tech-bd:      rgba(91,174,232,.25);
+      --integration: #E87DAA; --integration-bg:rgba(232,125,170,.07);--integration-bd:rgba(232,125,170,.25);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--t1);
+      min-height: 100vh;
+      background-image: radial-gradient(circle, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    body::before {
+      content:'';
+      position:fixed;top:0;left:0;right:0;height:500px;
+      background:
+        radial-gradient(ellipse 70% 40% at 15% -5%, rgba(139,131,240,.09) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 35% at 85% -5%, rgba(91,174,232,.06)  0%, transparent 60%);
+      pointer-events:none;z-index:0;
+    }
+
+    /* ─── NAV ─── */
+    .topnav {
+      position:sticky;top:0;z-index:100;
+      background:rgba(11,13,20,.88);
+      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+      border-bottom:1px solid var(--border);
+      padding:0 36px;
+      display:flex;align-items:center;gap:16px;height:54px;
+    }
+
+    .back-link {
+      font-family:'JetBrains Mono',monospace;font-size:10px;
+      letter-spacing:.5px;color:var(--t3);text-decoration:none;
+      display:flex;align-items:center;gap:5px;
+      transition:color .15s;flex-shrink:0;
+    }
+    .back-link:hover{color:var(--t2)}
+    .back-link svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+    .nav-sep{color:var(--t3);font-size:11px;opacity:.5}
+
+    .nav-title{
+      font-family:'Syne',sans-serif;font-size:12px;font-weight:600;
+      color:var(--t2);letter-spacing:.3px;flex-shrink:0;
+    }
+    .nav-title b{color:var(--t1);font-weight:700}
+
+    .filter-row{display:flex;gap:5px;margin-left:auto;flex-wrap:wrap}
+
+    .pill {
+      font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:500;
+      letter-spacing:.9px;text-transform:uppercase;
+      padding:4px 10px;border-radius:20px;
+      border:1px solid var(--border);background:transparent;color:var(--t3);
+      cursor:pointer;transition:all .18s;
+    }
+    .pill:hover{color:var(--t2);border-color:rgba(255,255,255,.14)}
+    .pill.active{color:var(--t1);background:var(--bg3);border-color:rgba(255,255,255,.18)}
+
+    .pill[data-d="business"].active  {color:var(--business); border-color:var(--business-bd); background:var(--business-bg)}
+    .pill[data-d="app"].active       {color:var(--app);       border-color:var(--app-bd);       background:var(--app-bg)}
+    .pill[data-d="security"].active  {color:var(--security);  border-color:var(--security-bd);  background:var(--security-bg)}
+    .pill[data-d="data"].active      {color:var(--data);      border-color:var(--data-bd);      background:var(--data-bg)}
+    .pill[data-d="tech"].active      {color:var(--tech);      border-color:var(--tech-bd);      background:var(--tech-bg)}
+    .pill[data-d="integration"].active{color:var(--integration);border-color:var(--integration-bd);background:var(--integration-bg)}
+
+    /* ─── PAGE ─── */
+    .page{max-width:1420px;margin:0 auto;padding:52px 36px 88px;position:relative;z-index:1}
+
+    /* ─── HERO ─── */
+    .hero{margin-bottom:56px}
+
+    .hero-eyebrow{
+      font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:500;
+      letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:14px;
+    }
+
+    .hero-title{
+      font-family:'Syne',sans-serif;font-size:44px;font-weight:800;
+      line-height:1.05;letter-spacing:-.8px;color:var(--t1);margin-bottom:14px;
+    }
+    .hero-title em{
+      font-style:normal;
+      background:linear-gradient(120deg, var(--business) 0%, var(--tech) 50%, var(--app) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+
+    .hero-sub{font-size:14px;color:var(--t3);font-weight:300;max-width:540px;line-height:1.6}
+
+    .stats-row{display:flex;gap:36px;margin-top:28px;flex-wrap:wrap}
+    .stat{display:flex;flex-direction:column;gap:3px}
+    .stat-n{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;color:var(--t1);line-height:1}
+    .stat-l{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t3);letter-spacing:1.2px;text-transform:uppercase}
+
+    /* ─── DOMAIN SECTION ─── */
+    .domain-section{
+      margin-bottom:48px;
+      transition:opacity .25s, filter .25s;
+    }
+    .domain-section.dimmed{opacity:.12;pointer-events:none;filter:saturate(0)}
+
+    .domain-hdr{
+      display:flex;align-items:center;gap:10px;
+      margin-bottom:16px;padding-bottom:14px;
+      border-bottom:1px solid var(--border);
+    }
+    .d-stripe{width:3px;height:18px;border-radius:2px;flex-shrink:0}
+    .d-name{
+      font-family:'Syne',sans-serif;font-size:10.5px;font-weight:700;
+      letter-spacing:2.2px;text-transform:uppercase;color:var(--t2);
+    }
+    .d-count{
+      margin-left:auto;
+      font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t3);letter-spacing:.5px;
+    }
+
+    .dom-business .d-stripe{background:var(--business)}
+    .dom-app       .d-stripe{background:var(--app)}
+    .dom-security  .d-stripe{background:var(--security)}
+    .dom-data      .d-stripe{background:var(--data)}
+    .dom-tech      .d-stripe{background:var(--tech)}
+    .dom-integration.d-stripe{background:var(--integration)}
+
+    /* ─── CARDS ─── */
+    .cards-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(236px,1fr));
+      gap:10px;
+    }
+
+    .abb-card{
+      background:var(--bg2);
+      border:1px solid var(--border);
+      border-radius:10px;overflow:hidden;
+      cursor:pointer;
+      transition:transform .2s, box-shadow .2s, border-color .2s;
+      opacity:0;
+      animation:cardIn .45s ease forwards;
+    }
+    @keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Domain hover themes */
+    .c-business:hover  {border-color:var(--business-bd);box-shadow:0 8px 30px rgba(139,131,240,.14);transform:translateY(-3px)}
+    .c-app:hover       {border-color:var(--app-bd);      box-shadow:0 8px 30px rgba(46,201,154,.14); transform:translateY(-3px)}
+    .c-security:hover  {border-color:var(--security-bd); box-shadow:0 8px 30px rgba(240,107,106,.14);transform:translateY(-3px)}
+    .c-data:hover      {border-color:var(--data-bd);     box-shadow:0 8px 30px rgba(239,181,68,.14); transform:translateY(-3px)}
+    .c-tech:hover      {border-color:var(--tech-bd);     box-shadow:0 8px 30px rgba(91,174,232,.14); transform:translateY(-3px)}
+    .c-integration:hover{border-color:var(--integration-bd);box-shadow:0 8px 30px rgba(232,125,170,.14);transform:translateY(-3px)}
+
+    .c-bar{height:2px;width:100%}
+    .c-business   .c-bar{background:var(--business)}
+    .c-app        .c-bar{background:var(--app)}
+    .c-security   .c-bar{background:var(--security)}
+    .c-data       .c-bar{background:var(--data)}
+    .c-tech       .c-bar{background:var(--tech)}
+    .c-integration .c-bar{background:var(--integration)}
+
+    .c-head{
+      padding:12px 14px 10px;
+      border-bottom:1px solid var(--border);
+    }
+    .c-id{
+      font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:500;
+      letter-spacing:.8px;margin-bottom:5px;
+    }
+    .c-business   .c-id{color:var(--business)}
+    .c-app        .c-id{color:var(--app)}
+    .c-security   .c-id{color:var(--security)}
+    .c-data       .c-id{color:var(--data)}
+    .c-tech       .c-id{color:var(--tech)}
+    .c-integration .c-id{color:var(--integration)}
+
+    .c-name{
+      font-family:'Syne',sans-serif;font-size:12.5px;font-weight:600;
+      color:var(--t1);line-height:1.3;margin-bottom:3px;
+    }
+    .c-dtag{font-size:9.5px;color:var(--t3);letter-spacing:.2px}
+
+    .c-body{padding:10px 14px;display:flex;flex-direction:column;gap:6px}
+
+    .c-stitle{
+      font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:500;
+      letter-spacing:1.6px;text-transform:uppercase;color:var(--t3);margin-top:2px;
+    }
+    .c-row{
+      font-size:10.5px;color:var(--t2);line-height:1.55;
+      display:flex;gap:6px;align-items:flex-start;
+    }
+    .c-row::before{content:"·";flex-shrink:0;color:var(--t3)}
+
+    .c-foot{
+      border-top:1px solid var(--border);padding:8px 14px;
+      display:flex;flex-wrap:wrap;gap:4px;
+    }
+    .std-tag{
+      font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.3px;
+      padding:2px 6px;border-radius:3px;
+      border:1px solid rgba(255,255,255,.07);
+      color:var(--t3);background:rgba(255,255,255,.025);
+    }
+
+    /* ─── DEPENDENCY ─── */
+    .dep-section{
+      margin-top:60px;padding-top:36px;
+      border-top:1px solid var(--border);
+    }
+    .dep-hdr{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
+    .dep-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--t1)}
+    .dep-sub{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t3);letter-spacing:.5px}
+
+    .dep-wrap{
+      background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;
+    }
+
+    .dep-table{width:100%;border-collapse:collapse;font-size:11.5px}
+
+    .dep-table thead tr{background:var(--bg3)}
+    .dep-table th{
+      font-family:'JetBrains Mono',monospace;font-size:7.5px;font-weight:500;
+      letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);
+      padding:9px 16px;text-align:left;border-bottom:1px solid var(--border);
+    }
+    .dep-table td{
+      padding:9px 16px;border-bottom:1px solid rgba(255,255,255,.03);
+      color:var(--t2);vertical-align:middle;
+    }
+    .dep-table tr:last-child td{border-bottom:none}
+    .dep-table tr:hover td{background:rgba(255,255,255,.018)}
+
+    .dep-from{font-weight:500;color:var(--t1);font-family:'DM Sans',sans-serif}
+    .dep-arr{color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:14px}
+
+    .dep-type{
+      font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.5px;
+      padding:3px 8px;border-radius:4px;font-weight:500;
+    }
+    .dt-depends  {background:rgba(46,201,154,.1);  color:#2EC99A; border:1px solid rgba(46,201,154,.22)}
+    .dt-uses     {background:rgba(91,174,232,.1);  color:#5BAEE8; border:1px solid rgba(91,174,232,.22)}
+    .dt-publishes{background:rgba(239,181,68,.1);  color:#EFB544; border:1px solid rgba(239,181,68,.22)}
+    .dt-triggers {background:rgba(232,125,170,.1); color:#E87DAA; border:1px solid rgba(232,125,170,.22)}
+    .dt-queries  {background:rgba(139,131,240,.1); color:#8B83F0; border:1px solid rgba(139,131,240,.22)}
+
+    /* ─── FOOTER ─── */
+    .page-footer{
+      margin-top:64px;padding-top:24px;border-top:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    }
+    .footer-brand{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;color:var(--t3)}
+    .footer-meta{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t3);letter-spacing:.8px}
+
+    @media(max-width:768px){
+      .topnav{padding:0 16px}
+      .page{padding:32px 16px 60px}
+      .hero-title{font-size:28px}
+      .filter-row{display:none}
+      .cards-grid{grid-template-columns:1fr}
+    }
+  </style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --av: 'Nunito', 'Avenir Next', 'Avenir', sans-serif;
+      --cream: #FAFAF7;
+      --sand: #F5F2EB;
+      --warm: #EDE9E0;
+      --ink: #2A2F35;
+      --ink2: #4A5260;
+      --ink3: #838C99;
+      --border: rgba(42,47,53,0.09);
+      --border2: rgba(42,47,53,0.05);
+      --shadow: 0 14px 34px rgba(42,47,53,0.08);
+      --sage: #6A9E6E;
+      --sage-l: #EAF2EB;
+      --business: #7A6BB5;
+      --business-bg: rgba(122,107,181,0.10);
+      --business-bd: rgba(122,107,181,0.24);
+      --app: #3A8B7A;
+      --app-bg: rgba(58,139,122,0.10);
+      --app-bd: rgba(58,139,122,0.24);
+      --security: #C4785A;
+      --security-bg: rgba(196,120,90,0.10);
+      --security-bd: rgba(196,120,90,0.24);
+      --data: #B8903A;
+      --data-bg: rgba(184,144,58,0.10);
+      --data-bd: rgba(184,144,58,0.24);
+      --tech: #4A7FAE;
+      --tech-bg: rgba(74,127,174,0.10);
+      --tech-bd: rgba(74,127,174,0.24);
+      --integration: #A85068;
+      --integration-bg: rgba(168,80,104,0.10);
+      --integration-bd: rgba(168,80,104,0.24);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--av);
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      background-image: none;
+    }
+
+    body::before {
+      top: 52px;
+      left: 0;
+      right: 0;
+      height: 320px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(106,158,110,0.16), transparent 40%),
+        radial-gradient(circle at 84% 0%, rgba(74,127,174,0.12), transparent 35%);
+      opacity: 1;
+    }
+
+    .topnav {
+      height: 52px;
+      padding: 0 48px;
+      gap: 24px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .back-link {
+      font-family: var(--av);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0;
+      color: var(--ink);
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .back-link:hover { color: var(--ink); }
+    .back-link em { color: var(--sage); font-style: normal; }
+    .back-link svg { display: none; }
+
+    .nav-sep { display: none; }
+
+    .nav-title {
+      font-family: var(--av);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink3);
+      letter-spacing: 0;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-title b {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .topnav > .filter-row {
+      display: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2px;
+      flex: 1;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar { display: none; }
+
+    .nav-link {
+      font-family: var(--av);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink3);
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--ink);
+      background: var(--sand);
+    }
+
+    .nav-link.active {
+      color: var(--sage);
+      background: var(--sage-l);
+    }
+
+    .nav-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--sage);
+      background: var(--sage-l);
+      padding: 4px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 56px 48px 84px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(290px, .85fr);
+      gap: 24px;
+      margin-bottom: 36px;
+      align-items: stretch;
+    }
+
+    .hero-copy,
+    .hero-panel {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .hero-copy {
+      padding: 36px 38px;
+    }
+
+    .hero-panel {
+      padding: 28px 28px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(245,242,235,0.96) 100%);
+    }
+
+    .hero-eyebrow,
+    .panel-eyebrow,
+    .panel-label,
+    .d-name,
+    .c-stitle,
+    .dep-sub,
+    .footer-meta {
+      font-family: var(--av);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .hero-eyebrow {
+      color: var(--sage);
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      font-family: var(--av);
+      font-size: 42px;
+      font-weight: 300;
+      line-height: 1.12;
+      letter-spacing: 0;
+      color: var(--ink);
+      margin-bottom: 0;
+      max-width: 620px;
+    }
+
+    .hero-title em {
+      font-style: normal;
+      background: none;
+      color: var(--tech);
+      -webkit-text-fill-color: initial;
+    }
+
+    .hero-divider {
+      width: 40px;
+      height: 3px;
+      background: var(--sage);
+      border-radius: 2px;
+      margin: 18px 0;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink2);
+      line-height: 1.7;
+      max-width: 620px;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .stat {
+      display: block;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: white;
+      border: 0.5px solid var(--border);
+    }
+
+    .stat-n {
+      font-family: var(--av);
+      font-size: 30px;
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .stat-l {
+      font-family: var(--av);
+      font-size: 11px;
+      color: var(--ink3);
+      margin-top: 6px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .panel-eyebrow,
+    .panel-label { color: var(--ink3); }
+
+    .summary-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.76);
+      border: 0.5px solid var(--border);
+    }
+
+    .summary-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .summary-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .summary-count {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--ink3);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .summary-note {
+      font-size: 12px;
+      color: var(--ink2);
+      line-height: 1.55;
+      padding-top: 2px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-left: 0;
+    }
+
+    .pill {
+      font-family: var(--av);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border);
+      background: white;
+      color: var(--ink2);
+      transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+    }
+
+    .pill:hover {
+      color: var(--ink);
+      background: var(--sand);
+      border-color: rgba(42,47,53,0.14);
+      transform: translateY(-1px);
+    }
+
+    .pill.active {
+      color: var(--sage);
+      background: var(--sage-l);
+      border-color: rgba(106,158,110,0.30);
+    }
+
+    .pill[data-d="business"].active  { color: var(--business); background: var(--business-bg); border-color: var(--business-bd); }
+    .pill[data-d="app"].active       { color: var(--app); background: var(--app-bg); border-color: var(--app-bd); }
+    .pill[data-d="security"].active  { color: var(--security); background: var(--security-bg); border-color: var(--security-bd); }
+    .pill[data-d="data"].active      { color: var(--data); background: var(--data-bg); border-color: var(--data-bd); }
+    .pill[data-d="tech"].active      { color: var(--tech); background: var(--tech-bg); border-color: var(--tech-bd); }
+    .pill[data-d="integration"].active { color: var(--integration); background: var(--integration-bg); border-color: var(--integration-bd); }
+
+    .domain-section {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+      padding: 28px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: white;
+      box-shadow: 0 8px 24px rgba(42,47,53,0.05);
+      transition: opacity .22s ease, filter .22s ease, transform .22s ease, box-shadow .22s ease;
+    }
+
+    .domain-section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .domain-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.96) 20%, var(--section-tint, rgba(106,158,110,0.08)) 100%);
+      opacity: .8;
+      pointer-events: none;
+    }
+
+    .domain-section.dimmed {
+      opacity: .22;
+      filter: saturate(.75);
+      transform: scale(.995);
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    .domain-section[data-domain="business"] { --section-tint: rgba(122,107,181,0.12); }
+    .domain-section[data-domain="app"] { --section-tint: rgba(58,139,122,0.12); }
+    .domain-section[data-domain="security"] { --section-tint: rgba(196,120,90,0.12); }
+    .domain-section[data-domain="data"] { --section-tint: rgba(184,144,58,0.12); }
+    .domain-section[data-domain="tech"] { --section-tint: rgba(74,127,174,0.12); }
+    .domain-section[data-domain="integration"] { --section-tint: rgba(168,80,104,0.12); }
+
+    .domain-hdr {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .d-stripe {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 7px var(--section-tint, rgba(106,158,110,0.08));
+    }
+
+    .d-name {
+      font-family: var(--av);
+      color: var(--ink);
+    }
+
+    .d-count {
+      margin-left: auto;
+      font-family: var(--av);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink2);
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border);
+      background: rgba(255,255,255,0.74);
+    }
+
+    .cards-grid {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .abb-card {
+      background: rgba(255,255,255,0.92);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 22px rgba(42,47,53,0.04);
+      cursor: default;
+      opacity: 1;
+      animation: none;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .c-business:hover  { border-color: var(--business-bd); box-shadow: 0 16px 28px rgba(122,107,181,0.12); transform: translateY(-3px); }
+    .c-app:hover       { border-color: var(--app-bd); box-shadow: 0 16px 28px rgba(58,139,122,0.12); transform: translateY(-3px); }
+    .c-security:hover  { border-color: var(--security-bd); box-shadow: 0 16px 28px rgba(196,120,90,0.12); transform: translateY(-3px); }
+    .c-data:hover      { border-color: var(--data-bd); box-shadow: 0 16px 28px rgba(184,144,58,0.12); transform: translateY(-3px); }
+    .c-tech:hover      { border-color: var(--tech-bd); box-shadow: 0 16px 28px rgba(74,127,174,0.12); transform: translateY(-3px); }
+    .c-integration:hover { border-color: var(--integration-bd); box-shadow: 0 16px 28px rgba(168,80,104,0.12); transform: translateY(-3px); }
+
+    .c-bar { height: 4px; }
+
+    .c-head {
+      padding: 18px 20px 14px;
+      border-bottom: 0.5px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(245,242,235,0.55) 100%);
+    }
+
+    .c-id {
+      font-family: var(--av);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .c-name {
+      font-family: var(--av);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+
+    .c-dtag {
+      font-size: 12px;
+      color: var(--ink3);
+      line-height: 1.45;
+    }
+
+    .c-body {
+      padding: 16px 20px 18px;
+      gap: 8px;
+    }
+
+    .c-stitle {
+      font-family: var(--av);
+      color: var(--ink3);
+      margin-top: 6px;
+    }
+
+    .c-row {
+      font-size: 13px;
+      color: var(--ink2);
+      line-height: 1.6;
+      gap: 10px;
+    }
+
+    .c-business .c-row::before   { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--business); margin-top: 7px; }
+    .c-app .c-row::before        { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--app); margin-top: 7px; }
+    .c-security .c-row::before   { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--security); margin-top: 7px; }
+    .c-data .c-row::before       { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--data); margin-top: 7px; }
+    .c-tech .c-row::before       { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--tech); margin-top: 7px; }
+    .c-integration .c-row::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--integration); margin-top: 7px; }
+
+    .c-foot {
+      padding: 14px 20px 18px;
+      border-top: 0.5px solid var(--border);
+      background: rgba(255,255,255,0.72);
+      gap: 6px;
+    }
+
+    .std-tag {
+      font-family: var(--av);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: var(--ink2);
+      background: var(--sand);
+      border: 0.5px solid var(--border);
+    }
+
+    .dep-section {
+      margin-top: 36px;
+      padding: 30px 30px 12px;
+      border-top: none;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 10px 24px rgba(42,47,53,0.05);
+    }
+
+    .dep-hdr {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .dep-title {
+      font-family: var(--av);
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--ink);
+    }
+
+    .dep-sub {
+      font-family: var(--av);
+      color: var(--ink3);
+    }
+
+    .dep-wrap {
+      background: white;
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      overflow-x: auto;
+    }
+
+    .dep-table {
+      font-size: 13px;
+      min-width: 760px;
+    }
+
+    .dep-table thead tr { background: var(--warm); }
+
+    .dep-table th {
+      font-family: var(--av);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--ink3);
+      padding: 12px 16px;
+    }
+
+    .dep-table td {
+      padding: 11px 16px;
+      border-bottom: 0.5px solid var(--border2);
+      color: var(--ink2);
+      line-height: 1.55;
+    }
+
+    .dep-table tr:hover td { background: rgba(106,158,110,0.05); }
+
+    .dep-from {
+      font-family: var(--av);
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .dep-arr {
+      font-family: var(--av);
+      color: var(--sage);
+      font-size: 16px;
+      width: 36px;
+      text-align: center;
+    }
+
+    .dep-type {
+      font-family: var(--av);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .page-footer {
+      margin-top: 28px;
+      padding-top: 24px;
+    }
+
+    .footer-brand {
+      font-family: var(--av);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink2);
+    }
+
+    .footer-meta {
+      font-family: var(--av);
+      color: var(--ink3);
+    }
+
+    @media (max-width: 1120px) {
+      .hero { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 860px) {
+      .topnav {
+        padding: 0 20px;
+        gap: 14px;
+      }
+
+      .page {
+        padding: 40px 20px 68px;
+      }
+
+      .hero-copy,
+      .hero-panel,
+      .domain-section,
+      .dep-section {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .hero-title { font-size: 34px; }
+    }
+
+    @media (max-width: 640px) {
+      .topnav { padding: 0 16px; }
+      .page { padding: 32px 16px 56px; }
+
+      .hero-copy,
+      .hero-panel,
+      .domain-section,
+      .dep-section {
+        padding: 18px;
+      }
+
+      .hero-title { font-size: 30px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .domain-hdr { flex-wrap: wrap; }
+      .d-count { width: 100%; margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav class="topnav">
+  <a class="back-link" href="index.html">LMS <em>Research Hub</em></a>
+  <span class="nav-sep">·</span>
+  <span class="nav-title">LMS <b>Architecture Building Blocks</b></span>
+</nav>
+
+<div class="page">
+
+  <!-- ─── HERO ─── -->
+  <div class="hero">
+    <div class="hero-copy">
+    <div class="hero-eyebrow">TOGAF · 2026 · Enterprise Architecture</div>
+    <h1 class="hero-title">Architecture <em>building blocks</em> for a modern LMS</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">16 building blocks across 6 architectural domains — with interfaces, attributes, dependencies, and standards compliance.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-n">16</span><span class="stat-l">Total ABBs</span></div>
+      <div class="stat"><span class="stat-n">6</span><span class="stat-l">Domains</span></div>
+      <div class="stat"><span class="stat-n">16</span><span class="stat-l">Dependencies</span></div>
+      <div class="stat"><span class="stat-n">24+</span><span class="stat-l">Standards</span></div>
+    </div>
+    </div>
+    <aside class="hero-panel">
+      <div class="panel-eyebrow">Domain map</div>
+      <div class="summary-list">
+        <div class="summary-item"><span class="summary-dot" style="background:var(--business)"></span><span class="summary-name">Business</span><span class="summary-count">2 ABBs</span></div>
+        <div class="summary-item"><span class="summary-dot" style="background:var(--app)"></span><span class="summary-name">Application</span><span class="summary-count">5 ABBs</span></div>
+        <div class="summary-item"><span class="summary-dot" style="background:var(--security)"></span><span class="summary-name">Security</span><span class="summary-count">2 ABBs</span></div>
+        <div class="summary-item"><span class="summary-dot" style="background:var(--data)"></span><span class="summary-name">Data</span><span class="summary-count">2 ABBs</span></div>
+        <div class="summary-item"><span class="summary-dot" style="background:var(--tech)"></span><span class="summary-name">Technology</span><span class="summary-count">2 ABBs</span></div>
+        <div class="summary-item"><span class="summary-dot" style="background:var(--integration)"></span><span class="summary-name">Integration</span><span class="summary-count">3 ABBs</span></div>
+      </div>
+      <div class="summary-note">Use the filters to focus on one architectural slice without losing the overall map.</div>
+      <div class="panel-label">Filter domains</div>
+      <div class="filter-row">
+        <button class="pill active" data-d="all" type="button">All</button>
+        <button class="pill" data-d="business" type="button">Business</button>
+        <button class="pill" data-d="app" type="button">Application</button>
+        <button class="pill" data-d="security" type="button">Security</button>
+        <button class="pill" data-d="data" type="button">Data</button>
+        <button class="pill" data-d="tech" type="button">Technology</button>
+        <button class="pill" data-d="integration" type="button">Integration</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DOMAIN 1 · BUSINESS
+  ═══════════════════════════════════════════ -->
+  <div class="domain-section" data-domain="business">
+    <div class="domain-hdr dom-business">
+      <span class="d-stripe" style="background:var(--business)"></span>
+      <span class="d-name">Business Architecture</span>
+      <span class="d-count">2 ABBs</span>
+    </div>
+    <div class="cards-grid">
+
+      <div class="abb-card c-business">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-001</div>
+          <div class="c-name">Tenant Management</div>
+          <div class="c-dtag">Business / Application</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Tenant lifecycle: provision, configure, suspend, delete</div>
+          <div class="c-row">Portal provisioning, feature flag management</div>
+          <div class="c-row">Tenant data export (GDPR portability)</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST API: /tenants, /portals — HTTPS/JSON</div>
+          <div class="c-row">Events: TenantProvisioned, TenantSuspended</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Security: 3-layer tenant isolation</div>
+          <div class="c-row">Scalability: ≥ 1 000 tenants</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">RFC 9110</span>
+          <span class="std-tag">ISO/IEC 27001</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-business">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-010</div>
+          <div class="c-name">Payment &amp; eCommerce</div>
+          <div class="c-dtag">Business / Application</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Public storefront (no auth), Stripe Checkout</div>
+          <div class="c-row">Subscriptions, coupons, bundles, Stripe Tax</div>
+          <div class="c-row">Invoice PDF, full/partial refund workflow</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /orders, /subscriptions, /coupons</div>
+          <div class="c-row">Webhook: Stripe payment.succeeded/failed</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Security: No card data on LMS (PCI SAQ A)</div>
+          <div class="c-row">Compliance: Financial audit, 7-year retention</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">PCI DSS SAQ A</span>
+          <span class="std-tag">RFC 4648</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DOMAIN 2 · APPLICATION
+  ═══════════════════════════════════════════ -->
+  <div class="domain-section" data-domain="app">
+    <div class="domain-hdr dom-app">
+      <span class="d-stripe" style="background:var(--app)"></span>
+      <span class="d-name">Application Architecture</span>
+      <span class="d-count">5 ABBs</span>
+    </div>
+    <div class="cards-grid">
+
+      <div class="abb-card c-app">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-002</div>
+          <div class="c-name">Portal &amp; Branding</div>
+          <div class="c-dtag">Application</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">White-label portals with custom domains</div>
+          <div class="c-row">Logo, colors, fonts, certificate templates</div>
+          <div class="c-row">Auto-SSL (ACME), branded email config</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: PATCH /portals/{id}/branding</div>
+          <div class="c-row">CDN: HTTPS static asset delivery</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Performance: CDN p95 &lt; 50 ms</div>
+          <div class="c-row">Scalability: thousands of custom domains</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">RFC 8555 ACME</span>
+          <span class="std-tag">SPF/DKIM</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-app">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-005</div>
+          <div class="c-name">Course Catalog &amp; Enrollment</div>
+          <div class="c-dtag">Application</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Course CRUD, versioning, publishing</div>
+          <div class="c-row">Prerequisite enforcement, bulk enroll (500/call)</div>
+          <div class="c-row">Learning paths, auto-enroll rules, due-date reminders</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /courses, /enrollments, /learning-paths</div>
+          <div class="c-row">Events: EnrollmentCreated, CourseCompleted</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Performance: Catalog API p95 &lt; 200 ms (10k+ courses)</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">IMS Common Cartridge</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-app">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-006</div>
+          <div class="c-name">SCORM Runtime Engine</div>
+          <div class="c-dtag">Application</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">SCORM 1.2 full RTE API (LMSInitialize → LMSGetDiagnostic)</div>
+          <div class="c-row">SCORM 2004 + Simple Sequencing (Phase C)</div>
+          <div class="c-row">CMI data model, suspend/resume, virus scan</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /scorm/launch, /scorm/attempt</div>
+          <div class="c-row">JS Bridge: postMessage (SCORM API shim)</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Performance: Bridge p95 &lt; 150 ms</div>
+          <div class="c-row">Security: Sandboxed iframe, CSP, allowlisted origins</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">SCORM 1.2 ADL</span>
+          <span class="std-tag">SCORM 2004</span>
+          <span class="std-tag">W3C CSP L3</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-app">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-009</div>
+          <div class="c-name">Native Content &amp; Assessment</div>
+          <div class="c-dtag">Application</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">HLS video (480p/720p/1080p adaptive bitrate)</div>
+          <div class="c-row">PDF viewer with page-level completion</div>
+          <div class="c-row">Quiz: MCQ, multi-select, T/F, matching</div>
+          <div class="c-row">Server-side grading, question bank, CSV import</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /quizzes, /quiz-attempts, /content-items</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Security: Server-side grading, answers never exposed</div>
+          <div class="c-row">Accessibility: WCAG 2.2 AA, captions required</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">RFC 8216 HLS</span>
+          <span class="std-tag">WCAG 2.2 AA</span>
+          <span class="std-tag">ISO 32000</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-app">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-016</div>
+          <div class="c-name">Mobile Application</div>
+          <div class="c-dtag">Application / Technology</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Native iOS 16+ and Android 12+ apps</div>
+          <div class="c-row">Offline download AES-256 encrypted, SQLite sync</div>
+          <div class="c-row">Biometric auth, push notifications</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: HTTPS/JSON (same as web)</div>
+          <div class="c-row">APNs (iOS push), FCM (Android push)</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Security: Tokens in Keychain / Keystore</div>
+          <div class="c-row">Accessibility: WCAG 2.2 AA, 44px min touch</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">WCAG 2.2 AA</span>
+          <span class="std-tag">APNs</span>
+          <span class="std-tag">FCM</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DOMAIN 3 · SECURITY
+  ═══════════════════════════════════════════ -->
+  <div class="domain-section" data-domain="security">
+    <div class="domain-hdr">
+      <span class="d-stripe" style="background:var(--security)"></span>
+      <span class="d-name">Security Architecture</span>
+      <span class="d-count">2 ABBs</span>
+    </div>
+    <div class="cards-grid">
+
+      <div class="abb-card c-security">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-003</div>
+          <div class="c-name">Identity &amp; Access Management</div>
+          <div class="c-dtag">Technology / Security</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Local auth (bcrypt cost ≥ 12), lockout after 5 failures</div>
+          <div class="c-row">OIDC Authorization Code + PKCE (mandatory)</div>
+          <div class="c-row">SAML 2.0 SP, RBAC, MFA TOTP optional</div>
+          <div class="c-row">JWT RS256: access 15 min, refresh 7 d</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /auth/oidc/callback, /auth/saml/acs</div>
+          <div class="c-row">Token: JWT RS256 / Bearer</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Security: PKCE mandatory, Redis blacklist</div>
+          <div class="c-row">Scalability: Stateless JWT, horizontal scale</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">OIDC Core 1.0</span>
+          <span class="std-tag">SAML 2.0</span>
+          <span class="std-tag">OAuth 2.0 BCP</span>
+          <span class="std-tag">RFC 7519</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-security">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-004</div>
+          <div class="c-name">User Provisioning (SCIM)</div>
+          <div class="c-dtag">Application / Security</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">SCIM 2.0 user create / update / deprovision</div>
+          <div class="c-row">Group sync: SCIM group → LMS group</div>
+          <div class="c-row">JIT provisioning on first SSO login</div>
+          <div class="c-row">Deprovisioning within 60 seconds</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /scim/v2/Users, /scim/v2/Groups</div>
+          <div class="c-row">Protocol: SCIM 2.0, Bearer token auth</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Performance: 1 000 users synced &lt; 60 s</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">RFC 7644 SCIM 2.0</span>
+          <span class="std-tag">RFC 7643</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DOMAIN 4 · DATA
+  ═══════════════════════════════════════════ -->
+  <div class="domain-section" data-domain="data">
+    <div class="domain-hdr">
+      <span class="d-stripe" style="background:var(--data)"></span>
+      <span class="d-name">Data Architecture</span>
+      <span class="d-count">2 ABBs</span>
+    </div>
+    <div class="cards-grid">
+
+      <div class="abb-card c-data">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-007</div>
+          <div class="c-name">xAPI LRS &amp; cmi5 Service</div>
+          <div class="c-dtag">Application / Data</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">xAPI 1.0.3 statement ingestion (single + batch)</div>
+          <div class="c-row">Full xAPI query parameters, document APIs</div>
+          <div class="c-row">cmi5 AU launch, fetch URL token, 6-state machine</div>
+          <div class="c-row">Statement forwarding to external LRS</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /xapi/statements GET/POST</div>
+          <div class="c-row">Protocol: xAPI 1.0.3 / HTTPS / Basic / OAuth</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Performance: 1M statements, queries &lt; 2 s</div>
+          <div class="c-row">Security: Tenant-scoped, GDPR retention policy</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">xAPI 1.0.3 ADL</span>
+          <span class="std-tag">cmi5 1.0 ADL</span>
+          <span class="std-tag">IEEE 9274.1.1</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-data">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-015</div>
+          <div class="c-name">Reporting &amp; Analytics</div>
+          <div class="c-dtag">Application / Data</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Compliance dashboard: complete / overdue</div>
+          <div class="c-row">Custom report builder, filters, CSV/XLSX/PDF</div>
+          <div class="c-row">xAPI analytics, warehouse ETL (nightly)</div>
+          <div class="c-row">BI connector JDBC/ODBC read-only</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /reports/compliance, /reports/learner</div>
+          <div class="c-row">JDBC/ODBC: warehouse read-only</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Performance: Dashboard &lt; 3 s for 50k enrollments</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">JDBC 4.3</span>
+          <span class="std-tag">ODBC 3.8</span>
+          <span class="std-tag">ISO 8601</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DOMAIN 5 · TECHNOLOGY
+  ═══════════════════════════════════════════ -->
+  <div class="domain-section" data-domain="tech">
+    <div class="domain-hdr">
+      <span class="d-stripe" style="background:var(--tech)"></span>
+      <span class="d-name">Technology Architecture</span>
+      <span class="d-count">2 ABBs</span>
+    </div>
+    <div class="cards-grid">
+
+      <div class="abb-card c-tech">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-013</div>
+          <div class="c-name">Content Storage &amp; CDN</div>
+          <div class="c-dtag">Technology / Infrastructure</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Object storage: SCORM, video, PDF, certificates</div>
+          <div class="c-row">Tenant path prefix (/tenants/{id}/) for isolation</div>
+          <div class="c-row">Presigned URL with expiry, virus scan on upload</div>
+          <div class="c-row">CDN global delivery for HLS segments</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /storage/upload, /storage/presign</div>
+          <div class="c-row">Protocol: S3-compatible API, HTTPS CDN</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Performance: CDN p95 &lt; 50 ms</div>
+          <div class="c-row">Security: AES-256 at rest, signed URLs</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">S3 API</span>
+          <span class="std-tag">ISO/IEC 27001</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-tech">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-014</div>
+          <div class="c-name">Audit &amp; Compliance</div>
+          <div class="c-dtag">Technology / Compliance</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Append-only immutable audit log (no UPDATE/DELETE)</div>
+          <div class="c-row">Captures: actor, tenant, action, before/after</div>
+          <div class="c-row">7-year retention, CSV + CEF (SIEM) export</div>
+          <div class="c-row">GDPR DSR: export, delete, rectify within 48 h</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: GET /audit-logs, POST /gdpr/dsr</div>
+          <div class="c-row">Format: CSV, ArcSight CEF</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Compliance: SOC 2 CC6/CC7, GDPR Art.5/15/17</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">SOC 2 CC6/CC7</span>
+          <span class="std-tag">GDPR Art.5</span>
+          <span class="std-tag">ArcSight CEF</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DOMAIN 6 · INTEGRATION
+  ═══════════════════════════════════════════ -->
+  <div class="domain-section" data-domain="integration">
+    <div class="domain-hdr">
+      <span class="d-stripe" style="background:var(--integration)"></span>
+      <span class="d-name">Integration Architecture</span>
+      <span class="d-count">3 ABBs</span>
+    </div>
+    <div class="cards-grid">
+
+      <div class="abb-card c-integration">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-008</div>
+          <div class="c-name">LTI 1.3 Integration</div>
+          <div class="c-dtag">Application / Integration</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">LTI 1.3 Platform: OIDC login, ID token validation</div>
+          <div class="c-row">LTI 1.3 Tool Provider role</div>
+          <div class="c-row">Deep Linking, NRPS roster, AGS grade passback</div>
+          <div class="c-row">JWKS rotation without breaking active sessions</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /lti/login, /lti/launch, /lti/nrps</div>
+          <div class="c-row">Protocol: LTI 1.3 OIDC + JWKS</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Interoperability: Canvas, Moodle, Blackboard tested</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">IMS LTI 1.3</span>
+          <span class="std-tag">LTI Advantage</span>
+          <span class="std-tag">OIDC Core</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-integration">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-011</div>
+          <div class="c-name">Webhook &amp; Event Bus</div>
+          <div class="c-dtag">Application / Integration</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Webhook registration per tenant (URL + events)</div>
+          <div class="c-row">HMAC-SHA256 payload signing</div>
+          <div class="c-row">Backoff retry: 1s / 5s / 30s / 5min / 30min</div>
+          <div class="c-row">Dead-letter queue, delivery log (last 200)</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: POST/GET/DELETE /webhooks</div>
+          <div class="c-row">HTTPS POST + X-LMS-Signature header</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Reliability: DLQ ensures no event loss</div>
+          <div class="c-row">Security: HMAC-SHA256 per-tenant secret</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">RFC 2104 HMAC</span>
+          <span class="std-tag">RFC 9110</span>
+        </div>
+      </div>
+
+      <div class="abb-card c-integration">
+        <div class="c-bar"></div>
+        <div class="c-head">
+          <div class="c-id">LMS-ABB-012</div>
+          <div class="c-name">HRIS Connector</div>
+          <div class="c-dtag">Application / Integration</div>
+        </div>
+        <div class="c-body">
+          <div class="c-stitle">Functionality</div>
+          <div class="c-row">Adapter-pattern connector framework</div>
+          <div class="c-row">Workday, BambooHR REST sync, CSV/SFTP import</div>
+          <div class="c-row">Zoom vILT: meeting create + attendance webhook</div>
+          <div class="c-row">Deprovision: terminate → LMS deactivate</div>
+          <div class="c-stitle">Interfaces</div>
+          <div class="c-row">REST: /connectors, /connectors/{id}/sync</div>
+          <div class="c-row">Protocol: HTTPS REST, SFTP</div>
+          <div class="c-stitle">Attributes</div>
+          <div class="c-row">Security: Secrets encrypted at rest per connector</div>
+        </div>
+        <div class="c-foot">
+          <span class="std-tag">RFC 913 SFTP</span>
+          <span class="std-tag">OAuth 2.0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DEPENDENCY TABLE
+  ═══════════════════════════════════════════ -->
+  <div class="dep-section">
+    <div class="dep-hdr">
+      <span class="dep-title">ABB Dependencies</span>
+      <span class="dep-sub">16 relationships</span>
+    </div>
+    <div class="dep-wrap">
+      <table class="dep-table">
+        <thead>
+          <tr>
+            <th>From ABB</th>
+            <th></th>
+            <th>To ABB</th>
+            <th>Relationship</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="dep-from">ABB-002 Portal &amp; Branding</td>    <td class="dep-arr">→</td><td>ABB-001 Tenant Management</td>            <td><span class="dep-type dt-depends">depends on</span></td></tr>
+          <tr><td class="dep-from">ABB-003 IAM</td>                       <td class="dep-arr">→</td><td>ABB-001 Tenant Management</td>            <td><span class="dep-type dt-depends">depends on</span></td></tr>
+          <tr><td class="dep-from">ABB-004 SCIM</td>                      <td class="dep-arr">→</td><td>ABB-001 Tenant Management</td>            <td><span class="dep-type dt-depends">depends on</span></td></tr>
+          <tr><td class="dep-from">ABB-005 Course Catalog</td>            <td class="dep-arr">→</td><td>ABB-003 IAM</td>                          <td><span class="dep-type dt-depends">depends on</span></td></tr>
+          <tr><td class="dep-from">ABB-006 SCORM Engine</td>              <td class="dep-arr">→</td><td>ABB-003 IAM · ABB-005 Catalog</td>        <td><span class="dep-type dt-depends">depends on</span></td></tr>
+          <tr><td class="dep-from">ABB-006 SCORM Engine</td>              <td class="dep-arr">→</td><td>ABB-013 Storage &amp; CDN</td>            <td><span class="dep-type dt-uses">uses</span></td></tr>
+          <tr><td class="dep-from">ABB-007 xAPI / LRS</td>                <td class="dep-arr">→</td><td>ABB-003 IAM · ABB-005 Catalog</td>        <td><span class="dep-type dt-depends">depends on</span></td></tr>
+          <tr><td class="dep-from">ABB-008 LTI 1.3</td>                   <td class="dep-arr">→</td><td>ABB-003 IAM · ABB-005 Catalog</td>        <td><span class="dep-type dt-depends">depends on</span></td></tr>
+          <tr><td class="dep-from">ABB-009 Native Content</td>            <td class="dep-arr">→</td><td>ABB-005 Catalog · ABB-013 Storage</td>    <td><span class="dep-type dt-uses">uses</span></td></tr>
+          <tr><td class="dep-from">ABB-010 Payment</td>                   <td class="dep-arr">→</td><td>ABB-003 IAM · ABB-005 Catalog</td>        <td><span class="dep-type dt-depends">depends on</span></td></tr>
+          <tr><td class="dep-from">ABB-011 Webhook</td>                   <td class="dep-arr">→</td><td>ABB-005 Catalog · ABB-010 Payment</td>    <td><span class="dep-type dt-publishes">publishes events</span></td></tr>
+          <tr><td class="dep-from">ABB-012 HRIS Connector</td>            <td class="dep-arr">→</td><td>ABB-004 SCIM</td>                          <td><span class="dep-type dt-triggers">triggers</span></td></tr>
+          <tr><td class="dep-from">ABB-012 HRIS Connector</td>            <td class="dep-arr">→</td><td>ABB-005 Catalog</td>                       <td><span class="dep-type dt-triggers">triggers enrollment</span></td></tr>
+          <tr><td class="dep-from">ABB-014 Audit &amp; Compliance</td>    <td class="dep-arr">→</td><td>ABB-013 Storage &amp; CDN</td>            <td><span class="dep-type dt-uses">uses</span></td></tr>
+          <tr><td class="dep-from">ABB-015 Reporting</td>                 <td class="dep-arr">→</td><td>ABB-014 Audit · ABB-007 xAPI LRS</td>     <td><span class="dep-type dt-queries">queries</span></td></tr>
+          <tr><td class="dep-from">ABB-016 Mobile App</td>                <td class="dep-arr">→</td><td>ABB-003 IAM · ABB-006 SCORM</td>          <td><span class="dep-type dt-depends">depends on</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <div class="page-footer">
+    <span class="footer-brand">LMS Research Hub</span>
+    <span class="footer-meta">TOGAF · 16 ABBs · 6 DOMAINS · 2026</span>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.abb-card').forEach((card, i) => {
+    card.style.animationDelay = `${i * 38}ms`;
+  });
+
+  const pills = [...document.querySelectorAll('.pill')];
+  const sections = [...document.querySelectorAll('.domain-section')];
+
+  function setDomainFilter(domain) {
+    pills.forEach((pill) => {
+      const isActive = pill.dataset.d === domain;
+      pill.classList.toggle('active', isActive);
+      pill.setAttribute('aria-pressed', String(isActive));
+    });
+
+    sections.forEach((section) => {
+      const shouldShow = domain === 'all' || section.dataset.domain === domain;
+      section.classList.toggle('dimmed', !shouldShow);
+    });
+
+    if (domain !== 'all') {
+      const target = document.querySelector(`.domain-section[data-domain="${domain}"]`);
+      target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  pills.forEach((pill) => {
+    pill.setAttribute('aria-pressed', String(pill.classList.contains('active')));
+    pill.addEventListener('click', () => setDomainFilter(pill.dataset.d));
+  });
+</script>
+
+</body>
+</html>
